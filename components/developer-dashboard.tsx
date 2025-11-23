@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Code2, Braces, Binary, Regex, Hash, Palette, Clock, Link2, FileCode } from "lucide-react"
+import { Code2, Braces, Binary, Regex, Hash, Palette, Clock, Link2, FileCode, Fingerprint, Copy } from "lucide-react"
 
 type Tool = {
   id: string
@@ -74,6 +74,13 @@ const tools: Tool[] = [
     icon: <FileCode className="size-4" />,
     description: "Decode JWT tokens",
     component: <JwtDecoder />,
+  },
+  {
+    id: "guid-generator",
+    name: "GUID Generator",
+    icon: <Fingerprint className="size-4" />,
+    description: "Generate random GUIDs/UUIDs",
+    component: <GuidGenerator />,
   },
 ]
 
@@ -602,6 +609,63 @@ function JwtDecoder() {
           className="min-h-[120px] font-mono text-sm bg-card border-border text-foreground"
         />
       </div>
+    </div>
+  )
+}
+
+function GuidGenerator() {
+  const [guid, setGuid] = useState("")
+
+  const generateGuid = () => {
+    try {
+      const newGuid = crypto.randomUUID()
+      setGuid(newGuid)
+    } catch (err) {
+      setGuid(`Error: ${err instanceof Error ? err.message : "GUID generation failed"}`)
+    }
+  }
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(guid)
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea")
+      textArea.value = guid
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand("copy")
+      document.body.removeChild(textArea)
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="guid-output" className="text-foreground">
+          Generated GUID
+        </Label>
+        <div className="flex gap-2">
+          <Input
+            id="guid-output"
+            value={guid}
+            readOnly
+            placeholder="Click 'Generate GUID' to create a new GUID"
+            className="font-mono bg-card border-border text-foreground"
+          />
+          <Button
+            onClick={copyToClipboard}
+            disabled={!guid}
+            variant="outline"
+            className="border-border text-foreground hover:bg-muted bg-transparent"
+          >
+            <Copy className="size-4" />
+          </Button>
+        </div>
+      </div>
+      <Button onClick={generateGuid} className="bg-primary text-primary-foreground hover:bg-primary/90">
+        Generate GUID
+      </Button>
     </div>
   )
 }
