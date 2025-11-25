@@ -7,10 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function JsonFormatterPage() {
-  return (
-    <div className="p-6">
-      <JsonFormatter />
-    </div>
-  );
+  return <JsonFormatter />;
 }
-

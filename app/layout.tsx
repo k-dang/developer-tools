@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Geist_Mono, Geist_Mono as V0_Font_Geist_Mono } from "next/font/google";
+import { CommandMenu } from "@/components/command-menu";
 
 // Initialize fonts
 const _geistMono = V0_Font_Geist_Mono({
@@ -22,9 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={`font-sans antialiased`}>
         {children}
+        <CommandMenu />
         <Analytics />
       </body>
     </html>

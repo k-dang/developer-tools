@@ -7,10 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function JwtDecoderPage() {
-  return (
-    <div className="p-6">
-      <JwtDecoder />
-    </div>
-  );
+  return <JwtDecoder />;
 }
-

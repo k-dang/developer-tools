@@ -88,4 +88,3 @@ export const tools: ToolConfig[] = [
 export function getToolBySlug(slug: string): ToolConfig | undefined {
   return tools.find((tool) => tool.slug === slug);
 }
-

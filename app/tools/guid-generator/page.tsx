@@ -7,10 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function GuidGeneratorPage() {
-  return (
-    <div className="p-6">
-      <GuidGenerator />
-    </div>
-  );
+  return <GuidGenerator />;
 }
-

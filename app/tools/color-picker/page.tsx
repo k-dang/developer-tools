@@ -7,10 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function ColorPickerPage() {
-  return (
-    <div className="p-6">
-      <ColorPicker />
-    </div>
-  );
+  return <ColorPicker />;
 }
-

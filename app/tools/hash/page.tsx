@@ -7,10 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function HashPage() {
-  return (
-    <div className="p-6">
-      <HashGenerator />
-    </div>
-  );
+  return <HashGenerator />;
 }
-

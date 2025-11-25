@@ -5,11 +5,7 @@ import { usePathname } from "next/navigation";
 import { Code2 } from "lucide-react";
 import { tools, getToolBySlug } from "@/lib/tools-config";
 
-export default function ToolsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ToolsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const toolSlug = pathname.split("/").pop() || "";
   const currentTool = getToolBySlug(toolSlug);
@@ -21,7 +17,7 @@ export default function ToolsLayout({
         <div className="flex h-16 items-center gap-2 border-b border-border px-6">
           <Code2 className="size-6 text-primary" />
           <h1 className="font-mono text-lg font-semibold text-foreground">
-            DevTools
+            <Link href="/">DevTools</Link>
           </h1>
         </div>
         <nav className="space-y-1 p-4">
@@ -52,17 +48,12 @@ export default function ToolsLayout({
       <main className="flex-1 overflow-auto">
         {currentTool && (
           <div className="border-b border-border bg-card px-6 py-4">
-            <h2 className="text-2xl font-semibold text-foreground">
-              {currentTool.name}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {currentTool.description}
-            </p>
+            <h2 className="text-2xl font-semibold text-foreground">{currentTool.name}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{currentTool.description}</p>
           </div>
         )}
-        {children}
+        <div className="p-6">{children}</div>
       </main>
     </div>
   );
 }
-

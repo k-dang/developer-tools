@@ -8,7 +8,7 @@ export default function Page() {
     <div className="min-h-screen bg-background dark">
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
         {/* Hero Section */}
-        <div className="mb-16 text-center">
+        <div className="mb-12 text-center">
           <h1 className="mb-4 font-mono text-5xl font-bold text-foreground lg:text-6xl">
             <span className="text-muted-foreground">&gt;</span> developer_tools
             <span className="terminal-cursor ml-2 inline-block text-primary">|</span>
@@ -16,8 +16,17 @@ export default function Page() {
           <p className="mx-auto max-w-2xl font-mono text-lg text-muted-foreground">
             Essential utilities for developers. Fast and simple.
           </p>
+          <p className="font-mono text-sm text-muted-foreground/70">by Kevin</p>
           <p className="mt-4 font-mono text-sm text-muted-foreground/70">
-            Press <kbd className="rounded border border-border bg-muted px-2 py-1 font-mono text-xs">/</kbd> to search
+            Press{" "}
+            <kbd className="rounded border border-border bg-muted px-2 py-1 font-mono text-xs">
+              Cmd
+            </kbd>{" "}
+            +{" "}
+            <kbd className="rounded border border-border bg-muted px-2 py-1 font-mono text-xs">
+              K
+            </kbd>{" "}
+            to search
           </p>
         </div>
 

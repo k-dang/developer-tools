@@ -7,10 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function Base64Page() {
-  return (
-    <div className="p-6">
-      <Base64Tool />
-    </div>
-  );
+  return <Base64Tool />;
 }
-

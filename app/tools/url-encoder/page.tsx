@@ -7,10 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function UrlEncoderPage() {
-  return (
-    <div className="p-6">
-      <UrlTool />
-    </div>
-  );
+  return <UrlTool />;
 }
-
