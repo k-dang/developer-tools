@@ -1,0 +1,68 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Code2 } from "lucide-react";
+import { tools, getToolBySlug } from "@/lib/tools-config";
+
+export default function ToolsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const toolSlug = pathname.split("/").pop() || "";
+  const currentTool = getToolBySlug(toolSlug);
+
+  return (
+    <div className="flex h-screen bg-background dark">
+      {/* Sidebar */}
+      <aside className="w-64 border-r border-border bg-card">
+        <div className="flex h-16 items-center gap-2 border-b border-border px-6">
+          <Code2 className="size-6 text-primary" />
+          <h1 className="font-mono text-lg font-semibold text-foreground">
+            DevTools
+          </h1>
+        </div>
+        <nav className="space-y-1 p-4">
+          {tools.map((tool) => {
+            const href = `/tools/${tool.slug}`;
+            const isActive = pathname === href;
+            const Icon = tool.icon;
+
+            return (
+              <Link
+                key={tool.id}
+                href={href}
+                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <Icon className="size-4" />
+                <span className="font-medium">{tool.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-auto">
+        {currentTool && (
+          <div className="border-b border-border bg-card px-6 py-4">
+            <h2 className="text-2xl font-semibold text-foreground">
+              {currentTool.name}
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {currentTool.description}
+            </p>
+          </div>
+        )}
+        {children}
+      </main>
+    </div>
+  );
+}
+

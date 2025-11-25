@@ -1,5 +1,5 @@
-import { DeveloperDashboard } from "@/components/developer-dashboard";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <DeveloperDashboard />;
+  redirect("/tools/json-formatter");
 }

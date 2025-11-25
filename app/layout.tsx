@@ -11,9 +11,9 @@ const _geistMono = V0_Font_Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "v0 App",
-  description: "Created with v0",
-  generator: "v0.app",
+  title: "Developer Tool Dashboard",
+  description:
+    "A collection of essential developer tools including JSON formatter, Base64 encoder/decoder, regex tester, hash generator, color picker, timestamp converter, URL encoder/decoder, JWT decoder, and GUID generator",
 };
 
 export default function RootLayout({
