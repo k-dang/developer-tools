@@ -177,3 +177,31 @@
 .terminal-cursor {
   animation: blink 1s infinite;
 }
+
+@keyframes holographic {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.holographic-shimmer {
+  position: relative;
+}
+
+.holographic-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #ff0080, #ff8c00, #40e0d0, #8a2be2, #ff0080);
+  background-size: 300% 300%;
+  animation: holographic 3s ease infinite;
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+  pointer-events: none;
+}

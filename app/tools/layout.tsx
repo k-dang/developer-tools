@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Code2 } from "lucide-react";
 import { tools, getToolBySlug } from "@/lib/tools-config";
 
 export default function ToolsLayout({ children }: { children: React.ReactNode }) {
@@ -15,9 +14,10 @@ export default function ToolsLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside className="w-64 border-r border-border bg-card">
         <div className="flex h-16 items-center gap-2 border-b border-border px-6">
-          <Code2 className="size-6 text-primary" />
           <h1 className="font-mono text-lg font-semibold text-foreground">
-            <Link href="/">DevTools</Link>
+            <Link href="/">
+              <span className="text-muted-foreground">&gt;</span> developer_tools
+            </Link>
           </h1>
         </div>
         <nav className="space-y-1 p-4">

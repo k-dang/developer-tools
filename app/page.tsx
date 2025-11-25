@@ -17,8 +17,8 @@ export default function Page() {
           <p className="mx-auto max-w-2xl font-mono text-lg text-muted-foreground">
             Essential utilities for developers. Fast and simple.
           </p>
-          <p className="mt-2 font-mono text-sm text-muted-foreground/70 flex items-center justify-center">
-            by Kevin{" "}
+          <p className="mt-2 font-mono text-sm text-muted-foreground/70 flex items-center justify-center ">
+            by <span className="holographic-shimmer ml-1">Kevin</span>
             <a
               href="https://github.com/k-dang"
               target="_blank"
@@ -57,12 +57,7 @@ export default function Page() {
             {tools.map((tool, index) => {
               const Icon = tool.icon;
               return (
-                <Link
-                  key={tool.id}
-                  href={`/tools/${tool.slug}`}
-                  className="group"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
+                <Link key={tool.id} href={`/tools/${tool.slug}`} className="group">
                   <Card className="h-full border transition-all hover:border-primary/40 hover:shadow-md">
                     <CardContent className="flex items-center gap-4 p-4">
                       <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-primary/10 transition-colors">
