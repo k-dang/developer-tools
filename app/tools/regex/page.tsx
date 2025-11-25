@@ -7,9 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function RegexPage() {
-  return (
-    <div className="p-6">
-      <RegexTester />
-    </div>
-  );
+  return <RegexTester />;
 }

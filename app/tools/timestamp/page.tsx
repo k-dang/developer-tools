@@ -7,9 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function TimestampPage() {
-  return (
-    <div className="p-6">
-      <TimestampConverter />
-    </div>
-  );
+  return <TimestampConverter />;
 }
