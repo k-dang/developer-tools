@@ -7,3 +7,4 @@ export { TimestampConverter } from "./timestamp-converter";
 export { UrlTool } from "./url-tool";
 export { JwtDecoder } from "./jwt-decoder";
 export { GuidGenerator } from "./guid-generator";
+export { TextDiffer } from "./text-differ-tool";

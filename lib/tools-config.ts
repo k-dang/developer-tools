@@ -8,6 +8,7 @@ import {
   Link2,
   FileCode,
   Fingerprint,
+  GitCompare,
   type LucideIcon,
 } from "lucide-react";
 
@@ -82,6 +83,13 @@ export const tools: ToolConfig[] = [
     name: "GUID Generator",
     icon: Fingerprint,
     description: "Generate random GUIDs/UUIDs",
+  },
+  {
+    id: "text-differ",
+    slug: "text-differ",
+    name: "Text Differ",
+    icon: GitCompare,
+    description: "Compare and highlight text differences",
   },
 ];
 
