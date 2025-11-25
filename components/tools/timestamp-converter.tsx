@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 export function TimestampConverter() {
-  const [timestamp, setTimestamp] = useState(Date.now().toString());
+  const [timestamp, setTimestamp] = useState(() => Date.now().toString());
   const [dateTime, setDateTime] = useState(new Date().toISOString());
 
   const convertTimestamp = (ts: string) => {
