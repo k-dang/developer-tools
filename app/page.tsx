@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { tools } from "@/lib/tools-config";
 import { Card, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
@@ -16,7 +17,24 @@ export default function Page() {
           <p className="mx-auto max-w-2xl font-mono text-lg text-muted-foreground">
             Essential utilities for developers. Fast and simple.
           </p>
-          <p className="font-mono text-sm text-muted-foreground/70">by Kevin</p>
+          <p className="mt-2 font-mono text-sm text-muted-foreground/70 flex items-center justify-center">
+            by Kevin{" "}
+            <a
+              href="https://github.com/k-dang"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center ml-2 hover:text-primary transition-colors"
+              aria-label="GitHub repository"
+            >
+              <Image
+                src="/github.svg"
+                alt="GitHub"
+                width={24}
+                height={24}
+                className="dark:invert"
+              />
+            </a>
+          </p>
           <p className="mt-4 font-mono text-sm text-muted-foreground/70">
             Press{" "}
             <kbd className="rounded border border-border bg-muted px-2 py-1 font-mono text-xs">
