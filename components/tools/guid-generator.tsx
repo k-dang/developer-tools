@@ -22,13 +22,7 @@ export function GuidGenerator() {
     try {
       await navigator.clipboard.writeText(guid);
     } catch (err) {
-      // Fallback for older browsers
-      const textArea = document.createElement("textarea");
-      textArea.value = guid;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
+      console.error("Failed to copy GUID:", err);
     }
   };
 
