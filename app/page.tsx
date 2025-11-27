@@ -3,6 +3,7 @@ import Image from "next/image";
 import { tools } from "@/lib/tools-config";
 import { Card, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
+import { KeyboardShortcut } from "@/components/keyboard-shortcut";
 
 export default function Page() {
   return (
@@ -35,17 +36,7 @@ export default function Page() {
               />
             </a>
           </p>
-          <p className="mt-4 font-mono text-sm text-muted-foreground/70">
-            Press{" "}
-            <kbd className="rounded border border-border bg-muted px-2 py-1 font-mono text-xs">
-              Cmd
-            </kbd>{" "}
-            +{" "}
-            <kbd className="rounded border border-border bg-muted px-2 py-1 font-mono text-xs">
-              K
-            </kbd>{" "}
-            to search
-          </p>
+          <KeyboardShortcut />
         </div>
 
         {/* Tool List */}
