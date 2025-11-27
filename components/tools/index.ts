@@ -8,3 +8,5 @@ export { UrlTool } from "./url-tool";
 export { JwtDecoder } from "./jwt-decoder";
 export { GuidGenerator } from "./guid-generator";
 export { TextDiffer } from "./text-differ-tool";
+export { CharacterCounter } from "./character-counter";
+export { LoremIpsum } from "./lorem-ipsum";

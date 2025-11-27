@@ -9,6 +9,8 @@ import {
   FileCode,
   Fingerprint,
   GitCompare,
+  Type,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 
@@ -90,6 +92,20 @@ export const tools: ToolConfig[] = [
     name: "Text Differ",
     icon: GitCompare,
     description: "Compare and highlight text differences",
+  },
+  {
+    id: "character-counter",
+    slug: "character-counter",
+    name: "Character Counter",
+    icon: Type,
+    description: "Count characters, words, and lines",
+  },
+  {
+    id: "lorem-ipsum",
+    slug: "lorem-ipsum",
+    name: "Lorem Ipsum Generator",
+    icon: FileText,
+    description: "Generate placeholder text",
   },
 ];
 
