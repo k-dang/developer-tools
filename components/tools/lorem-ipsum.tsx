@@ -5,41 +5,96 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy } from "lucide-react";
+import { CopyButton } from "@/components/ui/copy-button";
 
 const loremWords = [
-  "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
-  "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore",
-  "magna", "aliqua", "enim", "ad", "minim", "veniam", "quis", "nostrud",
-  "exercitation", "ullamco", "laboris", "nisi", "aliquip", "ex", "ea", "commodo",
-  "consequat", "duis", "aute", "irure", "in", "reprehenderit", "voluptate",
-  "velit", "esse", "cillum", "fugiat", "nulla", "pariatur", "excepteur", "sint",
-  "occaecat", "cupidatat", "non", "proident", "sunt", "culpa", "qui", "officia",
-  "deserunt", "mollit", "anim", "id", "est", "laborum"
+  "lorem",
+  "ipsum",
+  "dolor",
+  "sit",
+  "amet",
+  "consectetur",
+  "adipiscing",
+  "elit",
+  "sed",
+  "do",
+  "eiusmod",
+  "tempor",
+  "incididunt",
+  "ut",
+  "labore",
+  "et",
+  "dolore",
+  "magna",
+  "aliqua",
+  "enim",
+  "ad",
+  "minim",
+  "veniam",
+  "quis",
+  "nostrud",
+  "exercitation",
+  "ullamco",
+  "laboris",
+  "nisi",
+  "aliquip",
+  "ex",
+  "ea",
+  "commodo",
+  "consequat",
+  "duis",
+  "aute",
+  "irure",
+  "in",
+  "reprehenderit",
+  "voluptate",
+  "velit",
+  "esse",
+  "cillum",
+  "fugiat",
+  "nulla",
+  "pariatur",
+  "excepteur",
+  "sint",
+  "occaecat",
+  "cupidatat",
+  "non",
+  "proident",
+  "sunt",
+  "culpa",
+  "qui",
+  "officia",
+  "deserunt",
+  "mollit",
+  "anim",
+  "id",
+  "est",
+  "laborum",
 ];
 
 function generateSentence(minWords: number = 8, maxWords: number = 15): string {
   const wordCount = Math.floor(Math.random() * (maxWords - minWords + 1)) + minWords;
   const words: string[] = [];
-  
+
   for (let i = 0; i < wordCount; i++) {
     words.push(loremWords[Math.floor(Math.random() * loremWords.length)]);
   }
-  
+
   // Capitalize first word
   words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
-  
+
   return words.join(" ") + ".";
 }
 
 function generateParagraph(minSentences: number = 3, maxSentences: number = 6): string {
-  const sentenceCount = Math.floor(Math.random() * (maxSentences - minSentences + 1)) + minSentences;
+  const sentenceCount =
+    Math.floor(Math.random() * (maxSentences - minSentences + 1)) + minSentences;
   const sentences: string[] = [];
-  
+
   for (let i = 0; i < sentenceCount; i++) {
     sentences.push(generateSentence());
   }
-  
+
   return sentences.join(" ");
 }
 
@@ -97,15 +152,7 @@ export function LoremIpsum() {
             <Label htmlFor="lorem-output" className="text-foreground">
               Generated Text
             </Label>
-            <Button
-              onClick={copyToClipboard}
-              variant="outline"
-              size="sm"
-              className="border-border text-foreground hover:bg-muted bg-transparent"
-            >
-              <Copy className="size-4 mr-2" />
-              Copy
-            </Button>
+            <CopyButton textToCopy={generatedText} />
           </div>
           <Textarea
             id="lorem-output"
@@ -118,4 +165,3 @@ export function LoremIpsum() {
     </div>
   );
 }
-

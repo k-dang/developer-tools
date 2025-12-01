@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Copy } from "lucide-react";
+import { CopyButton } from "@/components/ui/copy-button";
 
 export function GuidGenerator() {
   const [guid, setGuid] = useState("");
@@ -40,14 +40,7 @@ export function GuidGenerator() {
             placeholder="Click 'Generate GUID' to create a new GUID"
             className="font-mono bg-card border-border text-foreground"
           />
-          <Button
-            onClick={copyToClipboard}
-            disabled={!guid}
-            variant="outline"
-            className="border-border text-foreground hover:bg-muted bg-transparent"
-          >
-            <Copy className="size-4" />
-          </Button>
+          <CopyButton textToCopy={guid} />
         </div>
       </div>
       <Button

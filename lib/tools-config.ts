@@ -107,6 +107,13 @@ export const tools: ToolConfig[] = [
     icon: FileText,
     description: "Generate placeholder text",
   },
+  {
+    id: "cron",
+    slug: "cron",
+    name: "Cron Expression Assistant",
+    icon: Clock,
+    description: "Parse and validate cron expressions",
+  },
 ];
 
 export function getToolBySlug(slug: string): ToolConfig | undefined {

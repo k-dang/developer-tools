@@ -10,3 +10,4 @@ export { GuidGenerator } from "./guid-generator";
 export { TextDiffer } from "./text-differ-tool";
 export { CharacterCounter } from "./character-counter";
 export { LoremIpsum } from "./lorem-ipsum";
+export { CronAssistant } from "./cron-assistant";
