@@ -34,7 +34,6 @@ export function ImageConverter() {
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(
     null,
   );
-  const [isConverting, setIsConverting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const convertedImageRef = useRef<HTMLDivElement>(null);
 
@@ -88,7 +87,6 @@ export function ImageConverter() {
       return;
     }
 
-    setIsConverting(true);
     setError(null);
 
     try {
@@ -100,7 +98,6 @@ export function ImageConverter() {
         const supported = testCanvas.toDataURL("image/webp").indexOf("data:image/webp") === 0;
         if (!supported) {
           setError("WebP encoding is not supported in this browser");
-          setIsConverting(false);
           return;
         }
       }
@@ -186,8 +183,6 @@ export function ImageConverter() {
       const errorMessage = err instanceof Error ? err.message : "Conversion failed";
       setError(errorMessage);
       console.error("Image conversion error:", err);
-    } finally {
-      setIsConverting(false);
     }
   };
 
@@ -244,7 +239,7 @@ export function ImageConverter() {
             description="PNG, JPEG, or WebP (max file size varies by browser)"
             fileMetadata={(file) => {
               return imageDimensions
-                ? `${imageDimensions.width} × ${imageDimensions.height}px`
+                ? `${imageDimensions.width} x ${imageDimensions.height}px`
                 : undefined;
             }}
           />
@@ -308,10 +303,10 @@ export function ImageConverter() {
 
               <Button
                 onClick={convertImage}
-                disabled={isConverting || !inputFile}
+                disabled={!inputFile}
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                {isConverting ? "Converting..." : "Convert Image"}
+                Convert Image
               </Button>
             </CardContent>
           </Card>
@@ -357,7 +352,7 @@ export function ImageConverter() {
                   <div>
                     <p className="text-muted-foreground">Dimensions</p>
                     <p className="font-medium">
-                      {imageDimensions.width} × {imageDimensions.height}px
+                      {imageDimensions.width} x {imageDimensions.height}px
                     </p>
                   </div>
                 )}
@@ -376,53 +371,53 @@ export function ImageConverter() {
               <CardDescription>Preview and download your converted image</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-            <div className="flex items-center justify-center p-4 bg-muted rounded-lg">
-              {imageDimensions ? (
-                <Image
-                  src={outputUrl}
-                  alt="Converted"
-                  width={Math.min(imageDimensions.width, 800)}
-                  height={Math.min(imageDimensions.height, 400)}
-                  className="max-w-full max-h-[400px] w-auto h-auto object-contain rounded"
-                  unoptimized
-                />
-              ) : (
-                <div className="w-full h-[200px] flex items-center justify-center text-muted-foreground">
-                  Loading image...
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-2 text-sm">
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <p className="text-muted-foreground">File Size</p>
-                  <p className="font-medium">{formatFileSize(outputBlob.size)}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">Format</p>
-                  <p className="font-medium uppercase">
-                    {outputFormat.split("/")[1].replace("jpeg", "jpg")}
-                  </p>
-                </div>
+              <div className="flex items-center justify-center p-4 bg-muted rounded-lg">
+                {imageDimensions ? (
+                  <Image
+                    src={outputUrl}
+                    alt="Converted"
+                    width={Math.min(imageDimensions.width, 800)}
+                    height={Math.min(imageDimensions.height, 400)}
+                    className="max-w-full max-h-[400px] w-auto h-auto object-contain rounded"
+                    unoptimized
+                  />
+                ) : (
+                  <div className="w-full h-[200px] flex items-center justify-center text-muted-foreground">
+                    Loading image...
+                  </div>
+                )}
               </div>
-              {imageDimensions && (
-                <div>
-                  <p className="text-muted-foreground">Dimensions</p>
-                  <p className="font-medium">
-                    {imageDimensions.width} × {imageDimensions.height}px
-                  </p>
-                </div>
-              )}
-            </div>
 
-            <Button
-              onClick={handleDownload}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              <Download className="size-4 mr-2" />
-              Download Converted Image
-            </Button>
+              <div className="space-y-2 text-sm">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <p className="text-muted-foreground">File Size</p>
+                    <p className="font-medium">{formatFileSize(outputBlob.size)}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Format</p>
+                    <p className="font-medium uppercase">
+                      {outputFormat.split("/")[1].replace("jpeg", "jpg")}
+                    </p>
+                  </div>
+                </div>
+                {imageDimensions && (
+                  <div>
+                    <p className="text-muted-foreground">Dimensions</p>
+                    <p className="font-medium">
+                      {imageDimensions.width} x {imageDimensions.height}px
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <Button
+                onClick={handleDownload}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                <Download className="size-4 mr-2" />
+                Download Converted Image
+              </Button>
             </CardContent>
           </Card>
         </div>

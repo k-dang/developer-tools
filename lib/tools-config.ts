@@ -104,7 +104,7 @@ export const tools: ToolConfig[] = [
   {
     id: "lorem-ipsum",
     slug: "lorem-ipsum",
-    name: "Lorem Ipsum Generator",
+    name: "Lorem Ipsum",
     icon: FileText,
     description: "Generate placeholder text",
   },
