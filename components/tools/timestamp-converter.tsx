@@ -9,33 +9,24 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 
+const formatLocalISO = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const seconds = date.getSeconds().toString().padStart(2, "0");
+  const milliseconds = date.getMilliseconds().toString().padStart(3, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`;
+};
+
 export function TimestampConverter() {
   const initialDate = new Date();
   const [timestamp, setTimestamp] = useState(() => Date.now().toString());
-  const [dateTime, setDateTime] = useState(initialDate.toISOString());
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
   const [utcTime, setUtcTime] = useState(() => initialDate.toISOString());
-  const [localTime, setLocalTime] = useState(() => {
-    const offset = -initialDate.getTimezoneOffset();
-    const sign = offset >= 0 ? "+" : "-";
-    const hours = Math.floor(Math.abs(offset) / 60)
-      .toString()
-      .padStart(2, "0");
-    const minutes = (Math.abs(offset) % 60).toString().padStart(2, "0");
-    const offsetStr = `${sign}${hours}:${minutes}`;
-    return initialDate.toISOString().slice(0, -1) + offsetStr;
-  });
-
-  const formatLocalISO = (date: Date) => {
-    const offset = -date.getTimezoneOffset();
-    const sign = offset >= 0 ? "+" : "-";
-    const hours = Math.floor(Math.abs(offset) / 60)
-      .toString()
-      .padStart(2, "0");
-    const minutes = (Math.abs(offset) % 60).toString().padStart(2, "0");
-    const offsetStr = `${sign}${hours}:${minutes}`;
-    return date.toISOString().slice(0, -1) + offsetStr;
-  };
+  const [localTime, setLocalTime] = useState(() => formatLocalISO(initialDate));
 
   const updateTimes = (date: Date) => {
     setSelectedDate(date);
@@ -47,16 +38,6 @@ export function TimestampConverter() {
     setTimestamp(ts);
     const date = new Date(Number.parseInt(ts));
     if (!Number.isNaN(date.getTime())) {
-      setDateTime(date.toISOString());
-      updateTimes(date);
-    }
-  };
-
-  const convertDateTime = (dt: string) => {
-    setDateTime(dt);
-    const date = new Date(dt);
-    if (!Number.isNaN(date.getTime())) {
-      setTimestamp(date.getTime().toString());
       updateTimes(date);
     }
   };
@@ -66,7 +47,6 @@ export function TimestampConverter() {
     const date = new Date(utc);
     if (!Number.isNaN(date.getTime())) {
       setTimestamp(date.getTime().toString());
-      setDateTime(date.toISOString());
       setSelectedDate(date);
       setLocalTime(formatLocalISO(date));
     }
@@ -78,7 +58,6 @@ export function TimestampConverter() {
     const date = new Date(local);
     if (!Number.isNaN(date.getTime())) {
       setTimestamp(date.getTime().toString());
-      setDateTime(date.toISOString());
       setSelectedDate(date);
       setUtcTime(date.toISOString());
     }
@@ -106,17 +85,6 @@ export function TimestampConverter() {
           id="timestamp"
           value={timestamp}
           onChange={(e) => convertTimestamp(e.target.value)}
-          className="font-mono bg-muted border-border text-foreground"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="datetime" className="text-foreground">
-          ISO 8601 DateTime
-        </Label>
-        <Input
-          id="datetime"
-          value={dateTime}
-          onChange={(e) => convertDateTime(e.target.value)}
           className="font-mono bg-muted border-border text-foreground"
         />
       </div>

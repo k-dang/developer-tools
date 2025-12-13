@@ -110,7 +110,7 @@ export const tools: ToolConfig[] = [
   {
     id: "cron",
     slug: "cron",
-    name: "Cron Expression Assistant",
+    name: "Cron Helper",
     icon: Clock,
     description: "Parse and validate cron expressions",
   },
