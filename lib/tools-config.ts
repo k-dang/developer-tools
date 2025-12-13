@@ -11,6 +11,7 @@ import {
   GitCompare,
   Type,
   FileText,
+  Image,
   type LucideIcon,
 } from "lucide-react";
 
@@ -113,6 +114,13 @@ export const tools: ToolConfig[] = [
     name: "Cron Helper",
     icon: Clock,
     description: "Parse and validate cron expressions",
+  },
+  {
+    id: "image-converter",
+    slug: "image-converter",
+    name: "Image Converter",
+    icon: Image,
+    description: "Convert PNG, JPG, and WebP images",
   },
 ];
 
