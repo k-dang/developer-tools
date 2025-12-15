@@ -136,7 +136,6 @@ export function TimestampConverter() {
           const now = Date.now().toString();
           convertTimestamp(now);
         }}
-        className="w-40 bg-primary text-primary-foreground hover:bg-primary/90"
       >
         Use Current Time
       </Button>

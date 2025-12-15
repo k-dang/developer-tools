@@ -110,15 +110,6 @@ export function LoremIpsum() {
     setGeneratedText(paragraphs.join("\n\n"));
   };
 
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(generatedText);
-    } catch (err) {
-      // Clipboard API failed - silently fail
-      console.error("Failed to copy text:", err);
-    }
-  };
-
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -140,12 +131,7 @@ export function LoremIpsum() {
           className="bg-card border-border text-foreground"
         />
       </div>
-      <Button
-        onClick={generateText}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
-      >
-        Generate Lorem Ipsum
-      </Button>
+      <Button onClick={generateText}>Generate Lorem Ipsum</Button>
       {generatedText && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">

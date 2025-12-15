@@ -63,12 +63,7 @@ export function RegexTester() {
           className="min-h-[120px] font-mono text-sm bg-muted border-border text-foreground"
         />
       </div>
-      <Button
-        onClick={testRegex}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
-      >
-        Test Regex
-      </Button>
+      <Button onClick={testRegex}>Test Regex</Button>
       <Card className="p-4 bg-card border-border">
         <p className="mb-2 text-sm font-medium text-foreground">Matches: {matches.length}</p>
         <div className="space-y-1">

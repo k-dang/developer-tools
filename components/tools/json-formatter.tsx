@@ -32,12 +32,7 @@ export function JsonFormatter() {
           className="min-h-[200px] font-mono text-sm bg-muted border-border text-foreground"
         />
       </div>
-      <Button
-        onClick={formatJson}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
-      >
-        Format JSON
-      </Button>
+      <Button onClick={formatJson}>Format JSON</Button>
       <div className="space-y-2">
         <Label htmlFor="json-output" className="text-foreground">
           Formatted Output

@@ -40,9 +40,7 @@ export function Base64Tool() {
         />
       </div>
       <div className="flex gap-2">
-        <Button onClick={encode} className="bg-primary text-primary-foreground hover:bg-primary/90">
-          Encode
-        </Button>
+        <Button onClick={encode}>Encode</Button>
         <Button
           onClick={decode}
           variant="outline"

@@ -37,12 +37,7 @@ export function HashGenerator() {
           className="min-h-[150px] font-mono text-sm bg-muted border-border text-foreground"
         />
       </div>
-      <Button
-        onClick={generateHash}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
-      >
-        Generate SHA-256 Hash
-      </Button>
+      <Button onClick={generateHash}>Generate SHA-256 Hash</Button>
       <div className="space-y-2">
         <Label htmlFor="hash-output" className="text-foreground">
           SHA-256 Hash

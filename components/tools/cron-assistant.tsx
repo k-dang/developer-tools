@@ -125,7 +125,6 @@ export function CronAssistant() {
                 parseExpression(preset.expression);
               }}
               variant="outline"
-              className="border-border text-foreground hover:bg-muted bg-transparent"
             >
               {preset.label}
             </Button>

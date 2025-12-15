@@ -42,12 +42,7 @@ export function JwtDecoder() {
           className="min-h-[100px] font-mono text-sm bg-muted border-border text-foreground"
         />
       </div>
-      <Button
-        onClick={decodeJwt}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
-      >
-        Decode JWT
-      </Button>
+      <Button onClick={decodeJwt}>Decode JWT</Button>
       <div className="space-y-2">
         <Label htmlFor="jwt-header" className="text-foreground">
           Header

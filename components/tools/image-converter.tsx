@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Download } from "lucide-react";
 import { FileUploadZone } from "@/components/file-upload-zone";
 import { Image as ImageIcon } from "lucide-react";
@@ -260,18 +267,21 @@ export function ImageConverter() {
                 <Label htmlFor="output-format" className="text-foreground">
                   Output Format
                 </Label>
-                <select
-                  id="output-format"
+                <Select
                   value={outputFormat}
-                  onChange={(e) => setOutputFormat(e.target.value as OutputFormat)}
-                  className="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none"
+                  onValueChange={(value) => setOutputFormat(value as OutputFormat)}
                 >
-                  {FORMAT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger id="output-format" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {FORMAT_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {showQualitySlider && (
@@ -301,11 +311,7 @@ export function ImageConverter() {
                 </div>
               )}
 
-              <Button
-                onClick={convertImage}
-                disabled={!inputFile}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-              >
+              <Button onClick={convertImage} disabled={!inputFile}>
                 Convert Image
               </Button>
             </CardContent>
@@ -411,10 +417,7 @@ export function ImageConverter() {
                 )}
               </div>
 
-              <Button
-                onClick={handleDownload}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-              >
+              <Button onClick={handleDownload}>
                 <Download className="size-4 mr-2" />
                 Download Converted Image
               </Button>

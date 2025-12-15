@@ -18,14 +18,6 @@ export function GuidGenerator() {
     }
   };
 
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(guid);
-    } catch (err) {
-      console.error("Failed to copy GUID:", err);
-    }
-  };
-
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -43,12 +35,7 @@ export function GuidGenerator() {
           <CopyButton textToCopy={guid} />
         </div>
       </div>
-      <Button
-        onClick={generateGuid}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
-      >
-        Generate GUID
-      </Button>
+      <Button onClick={generateGuid}>Generate GUID</Button>
     </div>
   );
 }

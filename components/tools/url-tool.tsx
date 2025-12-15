@@ -36,14 +36,8 @@ export function UrlTool() {
         />
       </div>
       <div className="flex gap-2">
-        <Button onClick={encode} className="bg-primary text-primary-foreground hover:bg-primary/90">
-          Encode
-        </Button>
-        <Button
-          onClick={decode}
-          variant="outline"
-          className="border-border text-foreground hover:bg-muted bg-transparent"
-        >
+        <Button onClick={encode}>Encode</Button>
+        <Button onClick={decode} variant="outline">
           Decode
         </Button>
       </div>
