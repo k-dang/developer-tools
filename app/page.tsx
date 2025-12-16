@@ -49,10 +49,10 @@ export default function Page() {
               const Icon = tool.icon;
               return (
                 <Link key={tool.id} href={`/tools/${tool.slug}`} className="group">
-                  <Card className="h-full border transition-all hover:border-primary/40 hover:shadow-md">
+                  <Card className="h-full border transition-all hover:border-primary hover:bg-muted/50">
                     <CardContent className="flex items-center gap-4 p-4">
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-primary/10 transition-colors">
-                        <Icon className="size-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-background transition-colors">
+                        <Icon className="size-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <CardTitle className="font-mono text-base font-semibold truncate">
@@ -62,7 +62,7 @@ export default function Page() {
                           {tool.description}
                         </CardDescription>
                       </div>
-                      <ArrowRight className="size-4 shrink-0 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                      <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
                     </CardContent>
                   </Card>
                 </Link>
