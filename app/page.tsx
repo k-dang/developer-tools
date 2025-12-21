@@ -11,7 +11,7 @@ export default function Page() {
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
         {/* Hero Section */}
         <div className="mb-12 text-center">
-          <h1 className="mb-4 font-mono text-5xl font-bold text-foreground lg:text-6xl">
+          <h1 className="mb-4 font-mono text-2xl font-bold text-foreground md:text-5xl lg:text-6xl">
             <span className="text-muted-foreground">&gt;</span> developer_tools
             <span className="terminal-cursor ml-2 inline-block text-primary">|</span>
           </h1>
