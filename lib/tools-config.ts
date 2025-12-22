@@ -12,6 +12,7 @@ import {
   Type,
   FileText,
   Image,
+  Code,
   type LucideIcon,
 } from "lucide-react";
 
@@ -21,6 +22,7 @@ export type ToolConfig = {
   name: string;
   icon: LucideIcon;
   description: string;
+  category?: "tools" | "sandboxes";
 };
 
 export const tools: ToolConfig[] = [
@@ -121,6 +123,14 @@ export const tools: ToolConfig[] = [
     name: "Image Converter",
     icon: Image,
     description: "Convert PNG, JPG, and WebP images",
+  },
+  {
+    id: "ruby-sandbox",
+    slug: "ruby-sandbox",
+    name: "Ruby Sandbox",
+    icon: Code,
+    description: "Ruby code editor with syntax highlighting",
+    category: "sandboxes",
   },
 ];
 

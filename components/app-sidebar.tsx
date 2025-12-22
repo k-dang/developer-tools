@@ -44,22 +44,49 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>Tools</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {tools.map((tool) => {
-                const href = `/tools/${tool.slug}`;
-                const isActive = pathname === href;
-                const Icon = tool.icon;
+              {tools
+                .filter((tool) => !tool.category || tool.category === "tools")
+                .map((tool) => {
+                  const href = `/tools/${tool.slug}`;
+                  const isActive = pathname === href;
+                  const Icon = tool.icon;
 
-                return (
-                  <SidebarMenuItem key={tool.id}>
-                    <SidebarMenuButton asChild isActive={isActive}>
-                      <Link href={href}>
-                        <Icon className="size-4" />
-                        <span>{tool.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+                  return (
+                    <SidebarMenuItem key={tool.id}>
+                      <SidebarMenuButton asChild isActive={isActive}>
+                        <Link href={href}>
+                          <Icon className="size-4" />
+                          <span>{tool.name}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Sandboxes</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {tools
+                .filter((tool) => tool.category === "sandboxes")
+                .map((tool) => {
+                  const href = `/tools/${tool.slug}`;
+                  const isActive = pathname === href;
+                  const Icon = tool.icon;
+
+                  return (
+                    <SidebarMenuItem key={tool.id}>
+                      <SidebarMenuButton asChild isActive={isActive}>
+                        <Link href={href}>
+                          <Icon className="size-4" />
+                          <span>{tool.name}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
