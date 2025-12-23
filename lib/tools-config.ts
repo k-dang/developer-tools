@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Braces,
   Binary,
@@ -12,15 +13,15 @@ import {
   Type,
   FileText,
   Image,
-  Code,
   type LucideIcon,
 } from "lucide-react";
+import { RubyIcon } from "@/components/ui/ruby-icon";
 
 export type ToolConfig = {
   id: string;
   slug: string;
   name: string;
-  icon: LucideIcon;
+  icon: LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
   description: string;
   category?: "tools" | "sandboxes";
 };
@@ -128,7 +129,7 @@ export const tools: ToolConfig[] = [
     id: "ruby-sandbox",
     slug: "ruby-sandbox",
     name: "Ruby Sandbox",
-    icon: Code,
+    icon: RubyIcon,
     description: "Ruby code editor with syntax highlighting",
     category: "sandboxes",
   },

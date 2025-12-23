@@ -6,6 +6,33 @@ import { ArrowRight } from "lucide-react";
 import { KeyboardShortcut } from "@/components/keyboard-shortcut";
 
 export default function Page() {
+  const generalTools = tools.filter((tool) => !tool.category || tool.category === "tools");
+  const sandboxes = tools.filter((tool) => tool.category === "sandboxes");
+
+  const renderToolCard = (tool: (typeof tools)[number]) => {
+    const Icon = tool.icon;
+    return (
+      <Link key={tool.id} href={`/tools/${tool.slug}`} className="group">
+        <Card className="h-full border transition-all hover:border-primary hover:bg-muted/50">
+          <CardContent className="flex items-center gap-4 p-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-background transition-colors">
+              <Icon className="size-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="font-mono text-base font-semibold truncate">
+                {tool.name}
+              </CardTitle>
+              <CardDescription className="font-mono text-xs mt-0.5 truncate">
+                {tool.description}
+              </CardDescription>
+            </div>
+            <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
+          </CardContent>
+        </Card>
+      </Link>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background dark">
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
@@ -40,36 +67,26 @@ export default function Page() {
         </div>
 
         {/* Tool List */}
-        <div>
+        <div className="mb-12">
           <h2 className="mb-6 font-mono text-xl font-semibold text-foreground">
             <span className="text-muted-foreground">$</span> available_tools
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {tools.map((tool, index) => {
-              const Icon = tool.icon;
-              return (
-                <Link key={tool.id} href={`/tools/${tool.slug}`} className="group">
-                  <Card className="h-full border transition-all hover:border-primary hover:bg-muted/50">
-                    <CardContent className="flex items-center gap-4 p-4">
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-background transition-colors">
-                        <Icon className="size-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <CardTitle className="font-mono text-base font-semibold truncate">
-                          {tool.name}
-                        </CardTitle>
-                        <CardDescription className="font-mono text-xs mt-0.5 truncate">
-                          {tool.description}
-                        </CardDescription>
-                      </div>
-                      <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
-                    </CardContent>
-                  </Card>
-                </Link>
-              );
-            })}
+            {generalTools.map(renderToolCard)}
           </div>
         </div>
+
+        {/* Sandboxes Section */}
+        {sandboxes.length > 0 && (
+          <div>
+            <h2 className="mb-6 font-mono text-xl font-semibold text-foreground">
+              <span className="text-muted-foreground">$</span> sandboxes
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {sandboxes.map(renderToolCard)}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
