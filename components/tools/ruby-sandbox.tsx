@@ -64,24 +64,23 @@ export function RubySandbox() {
             {!isReady ? "Loading VM..." : "Run"}
           </Button>
         </div>
-        <div className="border rounded-md overflow-hidden">
-          <MonacoEditor
-            height="500px"
-            defaultLanguage="ruby"
-            value={code}
-            onChange={(value) => setCode(value || "")}
-            onMount={handleEditorDidMount}
-            theme="vs-dark"
-            options={{
-              minimap: { enabled: false },
-              fontSize: 14,
-              lineNumbers: "on",
-              scrollBeyondLastLine: false,
-              automaticLayout: true,
-              wordWrap: "on",
-            }}
-          />
-        </div>
+        <MonacoEditor
+          className="border"
+          height="500px"
+          defaultLanguage="ruby"
+          value={code}
+          onChange={(value) => setCode(value || "")}
+          onMount={handleEditorDidMount}
+          theme="vs-dark"
+          options={{
+            minimap: { enabled: false },
+            fontSize: 14,
+            lineNumbers: "on",
+            scrollBeyondLastLine: false,
+            automaticLayout: true,
+            wordWrap: "on",
+          }}
+        />
       </div>
 
       {isEditorMounted && (
