@@ -1,6 +1,6 @@
 "use client";
 
-import { useModifierKeyPrefix } from "@/hooks/useModifierKeyPrefix";
+import { useModifierKeyPrefix } from "@/hooks/use-modifier-key-prefix";
 
 export function KeyboardShortcut() {
   const mod = useModifierKeyPrefix();
