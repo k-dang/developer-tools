@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Play } from "lucide-react";
 import { useRubyWorker } from "@/hooks/use-ruby-worker";
+import { Spinner } from "@/components/ui/spinner";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
 
@@ -66,7 +67,7 @@ export function RubySandbox() {
         </div>
         <MonacoEditor
           className="border"
-          height="500px"
+          height="400px"
           defaultLanguage="ruby"
           value={code}
           onChange={(value) => setCode(value || "")}
@@ -80,31 +81,27 @@ export function RubySandbox() {
             automaticLayout: true,
             wordWrap: "on",
           }}
+          loading={<Spinner />}
         />
       </div>
 
       {isEditorMounted && (
         <div className="space-y-2">
-          {error && (
-            <div className="space-y-2">
-              <Label className="text-destructive">Error</Label>
-              <Textarea
-                value={error}
-                readOnly
-                className="font-mono text-sm bg-destructive/10 border-destructive text-destructive"
-                rows={4}
-              />
-            </div>
-          )}
-          <div className="space-y-2">
-            <Label className="text-foreground">Output</Label>
-            <Textarea
-              value={output.length > 0 ? output.join("\n") : ""}
-              readOnly
-              className="font-mono text-sm bg-muted h-[200px] resize-none whitespace-pre"
-              rows={10}
-            />
-          </div>
+          <Label className={error ? "text-destructive" : "text-foreground"}>Output</Label>
+          <Textarea
+            value={
+              error
+                ? `Error: ${error}${output.length > 0 ? `\n\nOutput:\n${output.join("\n")}` : ""}`
+                : output.length > 0
+                  ? output.join("\n")
+                  : ""
+            }
+            readOnly
+            className={`font-mono text-sm h-[200px] resize-none whitespace-pre ${
+              error ? "bg-destructive/10 border-destructive text-destructive" : "bg-muted"
+            }`}
+            rows={10}
+          />
         </div>
       )}
     </div>
