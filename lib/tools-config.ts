@@ -13,6 +13,7 @@ import {
   Type,
   FileText,
   Image,
+  Layers,
   type LucideIcon,
 } from "lucide-react";
 import { RubyIcon } from "@/components/ui/ruby-icon";
@@ -124,6 +125,13 @@ export const tools: ToolConfig[] = [
     name: "Image Converter",
     icon: Image,
     description: "Convert PNG, JPG, and WebP images",
+  },
+  {
+    id: "favicon-generator",
+    slug: "favicon-generator",
+    name: "Favicon Generator",
+    icon: Layers,
+    description: "Generate favicon images (ICO & PNG)",
   },
   {
     id: "ruby-sandbox",
