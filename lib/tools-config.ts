@@ -14,6 +14,7 @@ import {
   FileText,
   Image,
   Layers,
+  BookOpen,
   type LucideIcon,
 } from "lucide-react";
 import { RubyIcon } from "@/components/ui/ruby-icon";
@@ -140,6 +141,14 @@ export const tools: ToolConfig[] = [
     icon: RubyIcon,
     description: "Ruby code editor with syntax highlighting",
     category: "sandboxes",
+  },
+  {
+    id: "flink-kotlin",
+    slug: "flink-kotlin",
+    name: "Flink Kotlin Patterns",
+    icon: BookOpen,
+    description: "Code patterns for Apache Flink with Kotlin",
+    category: "tools",
   },
 ];
 
