@@ -10,6 +10,7 @@ type Pattern = {
   id: string;
   title: string;
   description: string;
+  usage: string;
   code: string;
   category: string;
 };
@@ -21,6 +22,7 @@ const patterns: Pattern[] = [
     title: "Kafka Source",
     category: "Sources",
     description: "Read data from Kafka using the Flink Kafka connector",
+    usage: "Use this when consuming real-time events from Kafka topics. Perfect for log processing, event-driven architectures, and building streaming ETL pipelines.",
     code: `import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment
 import org.apache.flink.connector.kafka.source.KafkaSource
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer
@@ -47,6 +49,7 @@ val stream = env.fromSource(
     title: "Kafka Source with JSON",
     category: "Sources",
     description: "Read JSON data from Kafka and deserialize to data class",
+    usage: "Essential for type-safe processing of structured JSON events from Kafka. Common in microservices architectures where services communicate via JSON messages.",
     code: `import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment
 import org.apache.flink.connector.kafka.source.KafkaSource
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer
@@ -88,6 +91,7 @@ val kafkaSource = KafkaSource.builder<Event>()
     title: "Map Transformation",
     category: "Transformations",
     description: "Transform stream elements using map operation",
+    usage: "Use for one-to-one transformations like data enrichment, format conversion, or computing derived fields. Ideal when each input produces exactly one output.",
     code: `data class User(val id: String, val name: String, val age: Int)
 data class UserInfo(val id: String, val displayName: String)
 
@@ -105,6 +109,7 @@ val userInfo = users.map { user ->
     title: "FlatMap Transformation",
     category: "Transformations",
     description: "FlatMap to emit zero or more elements per input",
+    usage: "Perfect for splitting records (e.g., sentence to words), filtering with transformation, or expanding nested structures. Use when one input can produce 0, 1, or many outputs.",
     code: `data class Sentence(val text: String)
 data class Word(val word: String, val count: Int = 1)
 
@@ -122,6 +127,7 @@ val words = sentences.flatMap { sentence ->
     title: "Filter Transformation",
     category: "Transformations",
     description: "Filter stream elements based on predicate",
+    usage: "Essential for reducing stream volume by removing unwanted events. Common in fraud detection, log filtering, and quality assurance workflows.",
     code: `data class Transaction(
     val id: String,
     val amount: Double,
@@ -141,6 +147,7 @@ val highValueTransactions = transactions
     title: "Tumbling Time Window",
     category: "Windows",
     description: "Aggregate events in fixed-size, non-overlapping windows",
+    usage: "Ideal for time-based aggregations like hourly metrics, daily summaries, or periodic reports. Each event belongs to exactly one window.",
     code: `import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
 
@@ -165,6 +172,7 @@ val aggregated = events
     title: "Sliding Time Window",
     category: "Windows",
     description: "Overlapping windows for continuous aggregations",
+    usage: "Perfect for moving averages, rolling statistics, and trend detection. Events belong to multiple overlapping windows for smooth continuous metrics.",
     code: `import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows
 
@@ -199,6 +207,7 @@ val rollingAverage = metrics
     title: "Session Window",
     category: "Windows",
     description: "Group events by activity sessions with gaps",
+    usage: "Critical for user behavior analysis, clickstream analytics, and session-based metrics. Automatically groups events separated by inactivity gaps.",
     code: `import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.assigners.EventTimeSessionWindows
 
@@ -231,6 +240,7 @@ val sessions = actions
     title: "Keyed State (ValueState)",
     category: "State",
     description: "Maintain per-key state across events",
+    usage: "Essential for stateful processing like counters, running totals, or tracking latest values per key. Provides fault-tolerant state management with exactly-once guarantees.",
     code: `import org.apache.flink.api.common.state.ValueState
 import org.apache.flink.api.common.state.ValueStateDescriptor
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
@@ -278,6 +288,7 @@ val enriched = events
     title: "List State",
     category: "State",
     description: "Store a list of elements in state",
+    usage: "Use for buffering events, maintaining event history, or collecting records for batch processing. Perfect for implementing micro-batching or deduplication windows.",
     code: `import org.apache.flink.api.common.state.ListState
 import org.apache.flink.api.common.state.ListStateDescriptor
 
@@ -317,6 +328,7 @@ class BufferingFunction : KeyedProcessFunction<String, Event, List<Event>>() {
     title: "Bounded Out-of-Orderness Watermark",
     category: "Watermarks",
     description: "Handle late events with bounded delay",
+    usage: "Critical for handling out-of-order events in real-world streams. Set max delay based on expected latency to balance completeness vs. processing delay.",
     code: `import org.apache.flink.api.common.eventtime.WatermarkStrategy
 import org.apache.flink.api.common.eventtime.SerializableTimestampAssigner
 import java.time.Duration
@@ -338,6 +350,7 @@ val withWatermarks = events.assignTimestampsAndWatermarks(
     title: "Watermark with Idle Source",
     category: "Watermarks",
     description: "Handle idle partitions in multi-partition sources",
+    usage: "Prevents idle Kafka partitions from blocking watermark progress. Essential for multi-partition sources where some partitions may be temporarily inactive.",
     code: `import org.apache.flink.api.common.eventtime.WatermarkStrategy
 import java.time.Duration
 
@@ -357,6 +370,7 @@ val events = env
     title: "Kafka Sink",
     category: "Sinks",
     description: "Write data to Kafka topic",
+    usage: "Standard pattern for publishing processed results to Kafka. Enables downstream consumers, event-driven architectures, and decoupled systems.",
     code: `import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema
 import org.apache.flink.connector.kafka.sink.KafkaSink
 import org.apache.flink.api.common.serialization.SimpleStringSchema
@@ -384,6 +398,7 @@ outputStream
     title: "Kafka Sink with JSON",
     category: "Sinks",
     description: "Serialize data class to JSON and write to Kafka",
+    usage: "Use when publishing structured data to Kafka for consumption by multiple heterogeneous services. Provides type-safe serialization with key extraction.",
     code: `import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema
 import org.apache.flink.connector.kafka.sink.KafkaSink
 import org.apache.flink.api.common.serialization.SerializationSchema
@@ -423,6 +438,7 @@ results.sinkTo(kafkaSink)`,
     title: "Stream Join",
     category: "Joins",
     description: "Join two streams within a time window",
+    usage: "Perfect for correlating events from different sources within time boundaries. Common in conversion tracking, multi-stream analytics, and data enrichment scenarios.",
     code: `import org.apache.flink.streaming.api.windowing.time.Time
 
 data class Click(val userId: String, val pageId: String, val timestamp: Long)
@@ -451,6 +467,7 @@ val conversions = clicks
     title: "Interval Join",
     category: "Joins",
     description: "Join events within a time interval",
+    usage: "More flexible than window joins, ideal for asymmetric time relationships like orders followed by payments. Maintains state only for the time interval needed.",
     code: `import org.apache.flink.streaming.api.functions.co.ProcessJoinFunction
 import org.apache.flink.streaming.api.windowing.time.Time
 
@@ -483,6 +500,7 @@ val completed = orders
     title: "Complex Event Processing (CEP)",
     category: "Advanced",
     description: "Detect patterns in event streams",
+    usage: "Essential for fraud detection, security monitoring, and anomaly detection. Identifies complex sequences of events matching specific patterns over time.",
     code: `import org.apache.flink.cep.CEP
 import org.apache.flink.cep.PatternStream
 import org.apache.flink.cep.pattern.Pattern
@@ -527,6 +545,7 @@ val alerts = patternStream.select { pattern ->
     title: "Async I/O for Enrichment",
     category: "Advanced",
     description: "Enrich stream with external data asynchronously",
+    usage: "Critical for high-throughput enrichment from external databases or APIs. Async calls prevent blocking, maintaining low latency while performing I/O operations.",
     code: `import org.apache.flink.streaming.api.functions.async.AsyncFunction
 import org.apache.flink.streaming.api.functions.async.ResultFuture
 import org.apache.flink.streaming.api.scala.async.AsyncDataStream
@@ -586,12 +605,15 @@ export function FlinkKotlinPatterns() {
       <div className="lg:col-span-3 space-y-4">
         <Card className="p-6 bg-card border-border">
           <div className="flex items-start justify-between mb-4">
-            <div>
+            <div className="flex-1 mr-4">
               <h3 className="text-lg font-semibold text-foreground mb-1">
                 {selectedPattern.title}
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground mb-2">
                 {selectedPattern.description}
+              </p>
+              <p className="text-sm text-foreground/80 italic">
+                💡 {selectedPattern.usage}
               </p>
             </div>
             <CopyButton textToCopy={selectedPattern.code} />
