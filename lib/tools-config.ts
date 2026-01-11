@@ -148,7 +148,7 @@ export const tools: ToolConfig[] = [
     name: "Flink Kotlin Patterns",
     icon: BookOpen,
     description: "Code patterns for Apache Flink with Kotlin",
-    category: "sandboxes",
+    category: "tools",
   },
 ];
 

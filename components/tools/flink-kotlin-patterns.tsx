@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Copy, Check } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { CopyButton } from "@/components/ui/copy-button";
 
 type Pattern = {
   id: string;
@@ -582,13 +580,6 @@ const categories = Array.from(new Set(patterns.map(p => p.category)));
 
 export function FlinkKotlinPatterns() {
   const [selectedPattern, setSelectedPattern] = useState<Pattern>(patterns[0]);
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(selectedPattern.code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-4">
@@ -603,24 +594,7 @@ export function FlinkKotlinPatterns() {
                 {selectedPattern.description}
               </p>
             </div>
-            <Button
-              onClick={handleCopy}
-              size="sm"
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              {copied ? (
-                <>
-                  <Check className="h-4 w-4" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4" />
-                  Copy
-                </>
-              )}
-            </Button>
+            <CopyButton textToCopy={selectedPattern.code} />
           </div>
           <div className="relative">
             <SyntaxHighlighter
