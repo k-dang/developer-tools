@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Copy, Check } from "lucide-react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 type Pattern = {
   id: string;
@@ -621,9 +623,19 @@ export function FlinkKotlinPatterns() {
             </Button>
           </div>
           <div className="relative">
-            <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm">
-              <code className="text-foreground font-mono">{selectedPattern.code}</code>
-            </pre>
+            <SyntaxHighlighter
+              language="kotlin"
+              style={vscDarkPlus}
+              customStyle={{
+                margin: 0,
+                borderRadius: "0.5rem",
+                fontSize: "0.875rem",
+                lineHeight: "1.5",
+              }}
+              showLineNumbers
+            >
+              {selectedPattern.code}
+            </SyntaxHighlighter>
           </div>
         </Card>
       </div>
