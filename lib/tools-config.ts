@@ -150,6 +150,14 @@ export const tools: ToolConfig[] = [
     description: "Code patterns for Apache Flink with Kotlin",
     category: "tools",
   },
+  {
+    id: "tech-stack-reference",
+    slug: "tech-stack-reference",
+    name: "Tech Stack Reference",
+    icon: BookOpen,
+    description: "Quick reference for Ruby/Rails, Kotlin/Maven, and Mise",
+    category: "tools",
+  },
 ];
 
 export function getToolBySlug(slug: string): ToolConfig | undefined {
