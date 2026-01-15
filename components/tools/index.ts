@@ -15,3 +15,4 @@ export { ImageConverter } from "./image-converter";
 export { FaviconGenerator } from "./favicon-generator";
 export { RubySandbox } from "./ruby-sandbox";
 export { FlinkKotlinPatterns } from "./flink-kotlin-patterns";
+export { StackPatternExplorer } from "./stack-pattern-explorer";

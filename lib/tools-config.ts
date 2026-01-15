@@ -15,6 +15,7 @@ import {
   Image,
   Layers,
   BookOpen,
+  Compass,
   type LucideIcon,
 } from "lucide-react";
 import { RubyIcon } from "@/components/ui/ruby-icon";
@@ -148,6 +149,14 @@ export const tools: ToolConfig[] = [
     name: "Flink Kotlin Patterns",
     icon: BookOpen,
     description: "Code patterns for Apache Flink with Kotlin",
+    category: "tools",
+  },
+  {
+    id: "stack-pattern-explorer",
+    slug: "stack-pattern-explorer",
+    name: "Stack Pattern Explorer",
+    icon: Compass,
+    description: "Best practices and patterns for new tech stacks",
     category: "tools",
   },
 ];
