@@ -546,6 +546,773 @@ bundle viz
 # Clean up unused gems
 bundle clean`,
       },
+      // GraphQL
+      {
+        id: "graphql-setup",
+        title: "GraphQL Setup",
+        category: "GraphQL",
+        description: "Install and configure GraphQL in Rails",
+        usage: "Use graphql-ruby gem to add GraphQL API to your Rails application. Great for flexible, efficient APIs.",
+        language: "bash",
+        code: `# Add graphql gem to Gemfile
+# gem 'graphql', '~> 2.2'
+
+# Install the gem
+bundle install
+
+# Generate GraphQL boilerplate
+rails generate graphql:install
+
+# This creates:
+# - app/graphql/types/
+# - app/graphql/mutations/
+# - app/graphql/your_app_schema.rb
+# - app/controllers/graphql_controller.rb
+
+# Generate a GraphQL type
+rails generate graphql:object User id:ID! name:String! email:String!
+
+# Generate a mutation
+rails generate graphql:mutation CreateUser
+
+# Start GraphiQL interface (included by default)
+# Visit http://localhost:3000/graphiql in development`,
+      },
+      {
+        id: "graphql-schema",
+        title: "GraphQL Schema Definition",
+        category: "GraphQL",
+        description: "Define the main GraphQL schema",
+        usage: "The schema is the entry point for all GraphQL queries and mutations. It defines what's available in your API.",
+        language: "ruby",
+        code: `# app/graphql/my_app_schema.rb
+class MyAppSchema < GraphQL::Schema
+  # Entry point for queries
+  query Types::QueryType
+
+  # Entry point for mutations
+  mutation Types::MutationType
+
+  # Enable batch loading to prevent N+1 queries
+  use GraphQL::Batch
+
+  # Dataloader (alternative to GraphQL::Batch)
+  use GraphQL::Dataloader
+
+  # Enable subscriptions (for real-time updates)
+  # subscription Types::SubscriptionType
+
+  # Error handling
+  rescue_from(ActiveRecord::RecordNotFound) do |err, obj, args, ctx, field|
+    raise GraphQL::ExecutionError, "#{field.type.unwrap.graphql_name} not found"
+  end
+
+  rescue_from(ActiveRecord::RecordInvalid) do |err|
+    raise GraphQL::ExecutionError, err.record.errors.full_messages.join(", ")
+  end
+end`,
+      },
+      {
+        id: "graphql-types",
+        title: "GraphQL Object Types",
+        category: "GraphQL",
+        description: "Define GraphQL object types for your models",
+        usage: "Types represent the structure of your data. Map your Rails models to GraphQL types with fields and custom resolvers.",
+        language: "ruby",
+        code: `# app/graphql/types/user_type.rb
+module Types
+  class UserType < Types::BaseObject
+    description "A user in the system"
+
+    # Fields
+    field :id, ID, null: false
+    field :name, String, null: false
+    field :email, String, null: false
+    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :admin, Boolean, null: false
+
+    # Association - has_many
+    field :posts, [Types::PostType], null: false
+
+    # Association with arguments
+    field :posts, [Types::PostType], null: false do
+      argument :published, Boolean, required: false
+      argument :limit, Integer, required: false
+    end
+
+    def posts(published: nil, limit: nil)
+      posts = object.posts
+      posts = posts.where(published: published) if published.present?
+      posts = posts.limit(limit) if limit.present?
+      posts
+    end
+
+    # Computed field
+    field :full_name, String, null: false
+    def full_name
+      "\#{object.first_name} \#{object.last_name}"
+    end
+
+    # Custom resolver method
+    field :post_count, Integer, null: false
+    def post_count
+      object.posts.count
+    end
+
+    # Field with authorization
+    field :private_data, String, null: true do
+      description "Only visible to the user themselves"
+    end
+
+    def private_data
+      return nil unless context[:current_user]&.id == object.id
+      object.private_data
+    end
+  end
+end
+
+# app/graphql/types/post_type.rb
+module Types
+  class PostType < Types::BaseObject
+    field :id, ID, null: false
+    field :title, String, null: false
+    field :body, String, null: false
+    field :published, Boolean, null: false
+    field :user, Types::UserType, null: false
+    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
+  end
+end`,
+      },
+      {
+        id: "graphql-queries",
+        title: "GraphQL Queries",
+        category: "GraphQL",
+        description: "Define GraphQL queries to fetch data",
+        usage: "Queries are read-only operations. Define them in QueryType to expose data through your GraphQL API.",
+        language: "ruby",
+        code: `# app/graphql/types/query_type.rb
+module Types
+  class QueryType < Types::BaseObject
+    description "The query root of the schema"
+
+    # Single record query
+    field :user, UserType, null: true do
+      description "Find a user by ID"
+      argument :id, ID, required: true
+    end
+
+    def user(id:)
+      User.find(id)
+    end
+
+    # Collection query
+    field :users, [UserType], null: false do
+      description "List all users"
+      argument :limit, Integer, required: false, default_value: 10
+    end
+
+    def users(limit:)
+      User.limit(limit)
+    end
+
+    # Query with multiple arguments
+    field :posts, [PostType], null: false do
+      description "Search posts"
+      argument :published, Boolean, required: false
+      argument :user_id, ID, required: false
+      argument :search, String, required: false
+    end
+
+    def posts(published: nil, user_id: nil, search: nil)
+      posts = Post.all
+      posts = posts.where(published: published) if published.present?
+      posts = posts.where(user_id: user_id) if user_id.present?
+      posts = posts.where("title ILIKE ?", "%\#{search}%") if search.present?
+      posts
+    end
+
+    # Current user query
+    field :me, UserType, null: true do
+      description "Get the currently authenticated user"
+    end
+
+    def me
+      context[:current_user]
+    end
+
+    # Complex query with eager loading (prevent N+1)
+    field :posts_with_users, [PostType], null: false
+
+    def posts_with_users
+      Post.includes(:user)
+    end
+  end
+end
+
+# Example GraphQL queries:
+# query {
+#   user(id: "1") {
+#     id
+#     name
+#     email
+#     posts {
+#       title
+#     }
+#   }
+# }
+#
+# query {
+#   posts(published: true, search: "GraphQL") {
+#     title
+#     body
+#     user {
+#       name
+#     }
+#   }
+# }`,
+      },
+      {
+        id: "graphql-mutations",
+        title: "GraphQL Mutations",
+        category: "GraphQL",
+        description: "Define GraphQL mutations to modify data",
+        usage: "Mutations are write operations. Use them for creating, updating, and deleting records.",
+        language: "ruby",
+        code: `# app/graphql/mutations/create_user.rb
+module Mutations
+  class CreateUser < BaseMutation
+    description "Create a new user"
+
+    # Input arguments
+    argument :name, String, required: true
+    argument :email, String, required: true
+    argument :password, String, required: true
+
+    # Return type
+    field :user, Types::UserType, null: true
+    field :errors, [String], null: false
+
+    def resolve(name:, email:, password:)
+      user = User.new(
+        name: name,
+        email: email,
+        password: password
+      )
+
+      if user.save
+        {
+          user: user,
+          errors: []
+        }
+      else
+        {
+          user: nil,
+          errors: user.errors.full_messages
+        }
+      end
+    end
+  end
+end
+
+# app/graphql/mutations/update_user.rb
+module Mutations
+  class UpdateUser < BaseMutation
+    description "Update an existing user"
+
+    argument :id, ID, required: true
+    argument :name, String, required: false
+    argument :email, String, required: false
+
+    field :user, Types::UserType, null: true
+    field :errors, [String], null: false
+
+    def resolve(id:, **attributes)
+      user = User.find(id)
+
+      # Authorization check
+      unless context[:current_user]&.id == user.id || context[:current_user]&.admin?
+        raise GraphQL::ExecutionError, "Not authorized"
+      end
+
+      if user.update(attributes)
+        { user: user, errors: [] }
+      else
+        { user: nil, errors: user.errors.full_messages }
+      end
+    end
+  end
+end
+
+# app/graphql/mutations/delete_user.rb
+module Mutations
+  class DeleteUser < BaseMutation
+    description "Delete a user"
+
+    argument :id, ID, required: true
+
+    field :success, Boolean, null: false
+    field :errors, [String], null: false
+
+    def resolve(id:)
+      user = User.find(id)
+
+      if user.destroy
+        { success: true, errors: [] }
+      else
+        { success: false, errors: user.errors.full_messages }
+      end
+    end
+  end
+end
+
+# app/graphql/types/mutation_type.rb
+module Types
+  class MutationType < Types::BaseObject
+    field :create_user, mutation: Mutations::CreateUser
+    field :update_user, mutation: Mutations::UpdateUser
+    field :delete_user, mutation: Mutations::DeleteUser
+  end
+end
+
+# Example GraphQL mutations:
+# mutation {
+#   createUser(input: {
+#     name: "John Doe"
+#     email: "john@example.com"
+#     password: "secret123"
+#   }) {
+#     user {
+#       id
+#       name
+#       email
+#     }
+#     errors
+#   }
+# }`,
+      },
+      {
+        id: "graphql-input-types",
+        title: "GraphQL Input Types",
+        category: "GraphQL",
+        description: "Define reusable input object types",
+        usage: "Input types allow complex nested inputs in mutations. Great for forms with multiple related objects.",
+        language: "ruby",
+        code: `# app/graphql/types/input/user_input_type.rb
+module Types
+  module Input
+    class UserInputType < Types::BaseInputObject
+      description "Attributes for creating or updating a user"
+
+      argument :name, String, required: true
+      argument :email, String, required: true
+      argument :age, Integer, required: false
+      argument :bio, String, required: false
+    end
+  end
+end
+
+# app/graphql/types/input/post_input_type.rb
+module Types
+  module Input
+    class PostInputType < Types::BaseInputObject
+      argument :title, String, required: true
+      argument :body, String, required: true
+      argument :published, Boolean, required: false, default_value: false
+    end
+  end
+end
+
+# Using input types in mutations
+module Mutations
+  class CreatePost < BaseMutation
+    argument :post_input, Types::Input::PostInputType, required: true
+
+    field :post, Types::PostType, null: true
+    field :errors, [String], null: false
+
+    def resolve(post_input:)
+      post = context[:current_user].posts.build(post_input.to_h)
+
+      if post.save
+        { post: post, errors: [] }
+      else
+        { post: nil, errors: post.errors.full_messages }
+      end
+    end
+  end
+end
+
+# Nested input types
+module Types
+  module Input
+    class CreateUserWithPostsInputType < Types::BaseInputObject
+      argument :user, Types::Input::UserInputType, required: true
+      argument :posts, [Types::Input::PostInputType], required: false
+    end
+  end
+end`,
+      },
+      {
+        id: "graphql-authentication",
+        title: "GraphQL Authentication & Authorization",
+        category: "GraphQL",
+        description: "Implement auth in GraphQL",
+        usage: "Secure your GraphQL API by adding authentication and authorization. Use context to pass current user info.",
+        language: "ruby",
+        code: `# app/controllers/graphql_controller.rb
+class GraphqlController < ApplicationController
+  # Skip CSRF for API
+  skip_before_action :verify_authenticity_token
+
+  def execute
+    variables = prepare_variables(params[:variables])
+    query = params[:query]
+    operation_name = params[:operationName]
+
+    # Get current user from token or session
+    current_user = authenticate_user
+
+    context = {
+      current_user: current_user,
+      current_ability: Ability.new(current_user) # For CanCanCan
+    }
+
+    result = MyAppSchema.execute(
+      query,
+      variables: variables,
+      context: context,
+      operation_name: operation_name
+    )
+
+    render json: result
+  rescue StandardError => e
+    raise e unless Rails.env.development?
+    handle_error_in_development(e)
+  end
+
+  private
+
+  def authenticate_user
+    # JWT authentication
+    token = request.headers['Authorization']&.split(' ')&.last
+    return nil unless token
+
+    begin
+      payload = JWT.decode(token, Rails.application.secret_key_base)[0]
+      User.find(payload['user_id'])
+    rescue JWT::DecodeError, ActiveRecord::RecordNotFound
+      nil
+    end
+  end
+
+  # Session-based authentication alternative
+  def authenticate_user_session
+    User.find_by(id: session[:user_id])
+  end
+end
+
+# Field-level authorization
+module Types
+  class PostType < Types::BaseObject
+    field :title, String, null: false
+
+    # Only show to authenticated users
+    field :private_notes, String, null: true do
+      description "Private notes (auth required)"
+    end
+
+    def private_notes
+      return nil unless context[:current_user]
+      object.private_notes
+    end
+
+    # Only show to post owner or admin
+    field :draft_content, String, null: true
+
+    def draft_content
+      user = context[:current_user]
+      return nil unless user
+      return nil unless user.id == object.user_id || user.admin?
+
+      object.draft_content
+    end
+  end
+end
+
+# Using Pundit for authorization
+module Mutations
+  class UpdatePost < BaseMutation
+    argument :id, ID, required: true
+    argument :title, String, required: false
+
+    field :post, Types::PostType, null: true
+    field :errors, [String], null: false
+
+    def resolve(id:, **attributes)
+      post = Post.find(id)
+
+      # Pundit authorization
+      raise GraphQL::ExecutionError, "Not authorized" unless
+        PostPolicy.new(context[:current_user], post).update?
+
+      if post.update(attributes)
+        { post: post, errors: [] }
+      else
+        { post: nil, errors: post.errors.full_messages }
+      end
+    end
+  end
+end`,
+      },
+      {
+        id: "graphql-n-plus-one",
+        title: "Prevent N+1 Queries",
+        category: "GraphQL",
+        description: "Optimize GraphQL queries with batching and eager loading",
+        usage: "GraphQL can easily cause N+1 queries. Use GraphQL::Batch or dataloader to batch database queries efficiently.",
+        language: "ruby",
+        code: `# Install graphql-batch gem
+# gem 'graphql-batch'
+
+# Enable in schema
+class MyAppSchema < GraphQL::Schema
+  use GraphQL::Batch
+end
+
+# Create a loader
+# app/graphql/loaders/record_loader.rb
+class RecordLoader < GraphQL::Batch::Loader
+  def initialize(model)
+    @model = model
+  end
+
+  def perform(ids)
+    records = @model.where(id: ids)
+    ids.each { |id| fulfill(id, records.find { |r| r.id == id.to_i }) }
+  end
+end
+
+# Create association loader
+# app/graphql/loaders/association_loader.rb
+class AssociationLoader < GraphQL::Batch::Loader
+  def initialize(model, association_name)
+    @model = model
+    @association_name = association_name
+  end
+
+  def perform(records)
+    # Preload the association
+    ActiveRecord::Associations::Preloader.new(
+      records: records,
+      associations: @association_name
+    ).call
+
+    records.each do |record|
+      fulfill(record, record.public_send(@association_name))
+    end
+  end
+end
+
+# Use loaders in types
+module Types
+  class PostType < Types::BaseObject
+    field :user, UserType, null: false
+
+    def user
+      # Batch load user - prevents N+1
+      RecordLoader.for(User).load(object.user_id)
+    end
+  end
+
+  class UserType < Types::BaseObject
+    field :posts, [PostType], null: false
+
+    def posts
+      # Batch load association
+      AssociationLoader.for(User, :posts).load(object)
+    end
+  end
+end
+
+# Alternative: Using GraphQL::Dataloader (built-in)
+module Types
+  class PostType < Types::BaseObject
+    field :user, UserType, null: false
+
+    def user
+      dataloader.with(Sources::ActiveRecordObject, User).load(object.user_id)
+    end
+  end
+end
+
+# app/graphql/sources/active_record_object.rb
+module Sources
+  class ActiveRecordObject < GraphQL::Dataloader::Source
+    def initialize(model_class)
+      @model_class = model_class
+    end
+
+    def fetch(ids)
+      records = @model_class.where(id: ids).index_by(&:id)
+      ids.map { |id| records[id] }
+    end
+  end
+end
+
+# Manual eager loading in resolver
+module Types
+  class QueryType < Types::BaseObject
+    field :posts_with_users, [PostType], null: false
+
+    def posts_with_users
+      # Eager load to prevent N+1
+      Post.includes(:user, :comments)
+    end
+  end
+end`,
+      },
+      {
+        id: "graphql-testing",
+        title: "Testing GraphQL",
+        category: "GraphQL",
+        description: "Write tests for GraphQL queries and mutations",
+        usage: "Test your GraphQL API to ensure queries and mutations work correctly. Use RSpec with GraphQL test helpers.",
+        language: "ruby",
+        code: `# spec/graphql/types/query_type_spec.rb
+require 'rails_helper'
+
+RSpec.describe Types::QueryType do
+  describe 'user query' do
+    let(:user) { create(:user, name: 'John Doe') }
+
+    let(:query) do
+      <<~GQL
+        query($id: ID!) {
+          user(id: $id) {
+            id
+            name
+            email
+          }
+        }
+      GQL
+    end
+
+    it 'returns a user' do
+      result = MyAppSchema.execute(
+        query,
+        variables: { id: user.id.to_s }
+      )
+
+      expect(result.dig('data', 'user', 'id')).to eq(user.id.to_s)
+      expect(result.dig('data', 'user', 'name')).to eq('John Doe')
+    end
+
+    it 'returns null for invalid id' do
+      result = MyAppSchema.execute(
+        query,
+        variables: { id: '9999' }
+      )
+
+      expect(result.dig('data', 'user')).to be_nil
+    end
+  end
+end
+
+# spec/graphql/mutations/create_user_spec.rb
+require 'rails_helper'
+
+RSpec.describe Mutations::CreateUser do
+  let(:mutation) do
+    <<~GQL
+      mutation($name: String!, $email: String!, $password: String!) {
+        createUser(input: {
+          name: $name
+          email: $email
+          password: $password
+        }) {
+          user {
+            id
+            name
+            email
+          }
+          errors
+        }
+      }
+    GQL
+  end
+
+  context 'with valid input' do
+    it 'creates a user' do
+      expect {
+        MyAppSchema.execute(
+          mutation,
+          variables: {
+            name: 'John Doe',
+            email: 'john@example.com',
+            password: 'password123'
+          }
+        )
+      }.to change(User, :count).by(1)
+    end
+
+    it 'returns user data' do
+      result = MyAppSchema.execute(
+        mutation,
+        variables: {
+          name: 'John Doe',
+          email: 'john@example.com',
+          password: 'password123'
+        }
+      )
+
+      expect(result.dig('data', 'createUser', 'user', 'name')).to eq('John Doe')
+      expect(result.dig('data', 'createUser', 'errors')).to be_empty
+    end
+  end
+
+  context 'with invalid input' do
+    it 'returns errors' do
+      result = MyAppSchema.execute(
+        mutation,
+        variables: {
+          name: '',
+          email: 'invalid',
+          password: '123'
+        }
+      )
+
+      expect(result.dig('data', 'createUser', 'user')).to be_nil
+      expect(result.dig('data', 'createUser', 'errors')).not_to be_empty
+    end
+  end
+end
+
+# Testing with authentication context
+RSpec.describe Types::QueryType do
+  describe 'me query' do
+    let(:user) { create(:user) }
+    let(:query) do
+      <<~GQL
+        query {
+          me {
+            id
+            name
+          }
+        }
+      GQL
+    end
+
+    it 'returns current user' do
+      result = MyAppSchema.execute(
+        query,
+        context: { current_user: user }
+      )
+
+      expect(result.dig('data', 'me', 'id')).to eq(user.id.to_s)
+    end
+  end
+end`,
+      },
     ],
   },
   {
