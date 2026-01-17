@@ -14,4 +14,4 @@ export { CronAssistant } from "./cron-assistant";
 export { ImageConverter } from "./image-converter";
 export { FaviconGenerator } from "./favicon-generator";
 export { RubySandbox } from "./ruby-sandbox";
-export { FlinkKotlinPatterns } from "./flink-kotlin-patterns";
+export { TechStackReference } from "./tech-stack-reference";
