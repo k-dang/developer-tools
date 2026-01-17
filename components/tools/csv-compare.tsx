@@ -38,22 +38,19 @@ function parseLine(line: string) {
         inQuotes = !inQuotes;
       }
     } else if (char === "," && !inQuotes) {
-      values.push(current.trim());
+      values.push(current);
       current = "";
     } else {
       current += char;
     }
   }
 
-  values.push(current.trim());
+  values.push(current);
   return values;
 }
 
 function parseCSV(text: string): ParsedCSV {
-  const lines = text
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0);
+  const lines = text.split(/\r?\n/).filter((line) => line.trim().length > 0);
 
   if (lines.length === 0) {
     return { headers: [], rows: [] };
