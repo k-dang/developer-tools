@@ -11,6 +11,7 @@ import {
   GitCompare,
   Type,
   FileText,
+  FileSpreadsheet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -92,6 +93,13 @@ export const tools: ToolConfig[] = [
     name: "Text Differ",
     icon: GitCompare,
     description: "Compare and highlight text differences",
+  },
+  {
+    id: "csv-compare",
+    slug: "csv-compare",
+    name: "CSV Compare",
+    icon: FileSpreadsheet,
+    description: "Upload or paste CSV files to highlight differences",
   },
   {
     id: "character-counter",
