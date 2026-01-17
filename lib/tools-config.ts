@@ -143,19 +143,11 @@ export const tools: ToolConfig[] = [
     category: "sandboxes",
   },
   {
-    id: "flink-kotlin",
-    slug: "flink-kotlin",
-    name: "Flink Kotlin Patterns",
-    icon: BookOpen,
-    description: "Code patterns for Apache Flink with Kotlin",
-    category: "tools",
-  },
-  {
     id: "tech-stack-reference",
     slug: "tech-stack-reference",
     name: "Tech Stack Reference",
     icon: BookOpen,
-    description: "Quick reference for Ruby/Rails, Kotlin/Maven, and Mise",
+    description: "Pattern library for Ruby/Rails, Kotlin/Maven, Flink, and Mise",
     category: "tools",
   },
 ];
