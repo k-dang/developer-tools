@@ -8,6 +8,7 @@ import {
   Clock,
   Link2,
   FileCode,
+  FileCode2,
   Fingerprint,
   GitCompare,
   Type,
@@ -112,6 +113,13 @@ export const tools: ToolConfig[] = [
     name: "Lorem Ipsum",
     icon: FileText,
     description: "Generate placeholder text",
+  },
+  {
+    id: "markdown-viewer",
+    slug: "markdown-viewer",
+    name: "Markdown Viewer",
+    icon: FileCode2,
+    description: "Live markdown preview with Mermaid diagram support",
   },
   {
     id: "cron",
