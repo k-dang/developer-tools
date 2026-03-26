@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -220,15 +222,22 @@ export function GraphqlPrettifier() {
         </Button>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="graphql-output" className="text-foreground">
-          Formatted Output
-        </Label>
-        <Textarea
-          id="graphql-output"
-          value={output}
-          readOnly
-          className="min-h-[200px] font-mono text-sm bg-card border-border text-foreground"
-        />
+        <Label className="text-foreground">Formatted Output</Label>
+        <SyntaxHighlighter
+          language="graphql"
+          style={vscDarkPlus}
+          customStyle={{
+            margin: 0,
+            borderRadius: "0.5rem",
+            fontSize: "0.85rem",
+            lineHeight: "1.5",
+            minHeight: "200px",
+            border: "1px solid hsl(var(--border))",
+          }}
+          showLineNumbers
+        >
+          {output || " "}
+        </SyntaxHighlighter>
       </div>
     </div>
   );
