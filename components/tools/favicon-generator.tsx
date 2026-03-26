@@ -46,6 +46,11 @@ const FAVICON_OUTPUTS: Omit<FaviconOutput, "file">[] = [
     description: "48x48 pixels - Windows shortcuts",
   },
   {
+    name: "favicon-128x128.png",
+    filename: "favicon-128x128.png",
+    description: "128x128 pixels - Chrome Web Store",
+  },
+  {
     name: "apple-touch-icon.png",
     filename: "apple-touch-icon.png",
     description: "180x180 pixels - iOS home screen",
@@ -62,7 +67,7 @@ const FAVICON_OUTPUTS: Omit<FaviconOutput, "file">[] = [
   },
 ];
 
-const FAVICON_SIZES = [16, 32, 48, 180, 192, 512];
+const FAVICON_SIZES = [16, 32, 48, 128, 180, 192, 512];
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -428,6 +433,7 @@ export function FaviconGenerator() {
                   <li>• favicon-16x16.png</li>
                   <li>• favicon-32x32.png</li>
                   <li>• favicon-48x48.png</li>
+                  <li>• favicon-128x128.png</li>
                   <li>• apple-touch-icon.png (180x180)</li>
                   <li>• android-chrome-192x192.png</li>
                   <li>• android-chrome-512x512.png</li>
