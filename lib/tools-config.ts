@@ -16,6 +16,7 @@ import {
   Image,
   Layers,
   BookOpen,
+  Network,
   type LucideIcon,
 } from "lucide-react";
 import { RubyIcon } from "@/components/ui/ruby-icon";
@@ -36,6 +37,13 @@ export const tools: ToolConfig[] = [
     name: "JSON Formatter",
     icon: Braces,
     description: "Format and validate JSON",
+  },
+  {
+    id: "graphql-prettifier",
+    slug: "graphql-prettifier",
+    name: "GraphQL Prettifier",
+    icon: Network,
+    description: "Format and prettify GraphQL queries",
   },
   {
     id: "base64",
