@@ -17,6 +17,7 @@ import {
   Layers,
   BookOpen,
   Network,
+  Table,
   type LucideIcon,
 } from "lucide-react";
 import { RubyIcon } from "@/components/ui/ruby-icon";
@@ -128,6 +129,13 @@ export const tools: ToolConfig[] = [
     name: "Markdown Viewer",
     icon: FileCode2,
     description: "Live markdown preview with Mermaid diagram support",
+  },
+  {
+    id: "csv-viewer",
+    slug: "csv-viewer",
+    name: "CSV Viewer",
+    icon: Table,
+    description: "Upload and inspect CSV files",
   },
   {
     id: "cron",
