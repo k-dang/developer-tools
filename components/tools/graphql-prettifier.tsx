@@ -177,8 +177,8 @@ function prettifyGraphQL(input: string): string {
 const SAMPLE_QUERY = `query GetUser($id: ID!) { user(id: $id) { id name email posts(first: 5, orderBy: CREATED_AT_DESC) { edges { node { id title body createdAt tags { name } } } pageInfo { hasNextPage endCursor } } friends { id name } } }`;
 
 export function GraphqlPrettifier() {
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
+  const [input, setInput] = useState(SAMPLE_QUERY);
+  const [output, setOutput] = useState(prettifyGraphQL(SAMPLE_QUERY));
 
   const formatGraphql = () => {
     try {
