@@ -9,7 +9,17 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { AlertCircle, FileSpreadsheet, Loader2, Rows3, Search, Table2, X } from "lucide-react";
+import {
+  AlertCircle,
+  FileSpreadsheet,
+  Loader2,
+  Maximize2,
+  Minimize2,
+  Rows3,
+  Search,
+  Table2,
+  X,
+} from "lucide-react";
 import { FileUploadZone } from "@/components/file-upload-zone";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -109,6 +119,7 @@ export function CsvViewer() {
   const [error, setError] = useState<string | null>(null);
   const [parsedRows, setParsedRows] = useState(0);
   const [droppedRows, setDroppedRows] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const parserRef = useRef<Papa.Parser | null>(null);
   const bufferedRowsRef = useRef<CsvRow[]>([]);
   const totalRowsRef = useRef(0);
@@ -141,6 +152,17 @@ export function CsvViewer() {
     setParsedRows(0);
     setDroppedRows(0);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isFullscreen]);
 
   const parseFile = (file: File) => {
     reset();
@@ -245,9 +267,136 @@ export function CsvViewer() {
     () => headers.map((header) => getColumnWidth(header, filteredRows)).join(" "),
     [headers, filteredRows],
   );
+  const tableHeightClass = isFullscreen ? "min-h-0 flex-1" : "h-[620px]";
 
-  return (
-    <div className="space-y-4">
+  const tablePreview = (
+    <div ref={tableContainerRef} className={cn("max-w-full overflow-auto", tableHeightClass)}>
+      <div className="w-max min-w-full">
+        <div className="sticky top-0 z-10 grid border-b bg-muted text-xs font-medium">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <div key={headerGroup.id} className="grid min-w-0" style={{ gridTemplateColumns }}>
+              {headerGroup.headers.map((header) => {
+                const color = getColumnColor(header.index);
+
+                return (
+                  <div
+                    key={header.id}
+                    className={cn(
+                      "min-w-0 whitespace-nowrap border-r px-3 py-2 last:border-r-0",
+                      color.header,
+                    )}
+                    title={String(header.column.columnDef.header ?? "")}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        <div className="relative" style={{ height: totalSize }}>
+          {filteredRows.length === 0 && activeSearchQuery && !isSearchPending && (
+            <div className="flex h-32 items-center justify-center px-4 text-sm text-muted-foreground">
+              No rows match your search.
+            </div>
+          )}
+          {visibleRows.map((virtualRow) => {
+            const row = table.getRowModel().rows[virtualRow.index];
+
+            return (
+              <div
+                key={row.id}
+                className={cn(
+                  "absolute left-0 grid w-full border-b text-sm",
+                  virtualRow.index % 2 === 0 ? "bg-card" : "bg-muted/25",
+                )}
+                style={{
+                  height: virtualRow.size,
+                  transform: `translateY(${virtualRow.start}px)`,
+                  gridTemplateColumns,
+                }}
+              >
+                {row.getVisibleCells().map((cell) => {
+                  const color = getColumnColor(cell.column.getIndex());
+
+                  return (
+                    <div
+                      key={cell.id}
+                      className={cn(
+                        "min-w-0 whitespace-nowrap border-r px-3 py-2 last:border-r-0",
+                        color.cell,
+                      )}
+                      title={String(cell.getValue() ?? "")}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+
+  const previewToolbar = (
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
+      <div>
+        <h3 className="text-sm font-semibold">CSV Preview</h3>
+        <p className="text-xs text-muted-foreground">
+          {isSearchPending
+            ? "Searching retained rows..."
+            : activeSearchQuery
+              ? `${formatNumber(filteredRows.length)} matches from ${formatNumber(rows.length)} retained rows.`
+              : `Showing and searching up to the first ${formatNumber(MAX_PREVIEW_ROWS)} rows.`}
+        </p>
+      </div>
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <Button
+          onClick={() => setIsFullscreen((prev) => !prev)}
+          variant="outline"
+          size="icon-sm"
+          title={isFullscreen ? "Exit full screen" : "Enter full screen"}
+          aria-label={isFullscreen ? "Exit full screen" : "Enter full screen"}
+        >
+          {isFullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
+        </Button>
+        <div className="relative w-full min-w-56 sm:w-72">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search retained rows..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            className="h-8 pl-8 pr-8 text-sm"
+          />
+          {searchQuery && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              className="absolute right-0.5 top-1/2 size-7 -translate-y-1/2"
+              onClick={() => setSearchQuery("")}
+              aria-label="Clear search"
+            >
+              <X className="size-4" />
+            </Button>
+          )}
+        </div>
+        {parseState === "parsing" && (
+          <Button variant="outline" size="sm" onClick={() => parserRef.current?.abort()}>
+            Stop
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+
+  const content = (
+    <>
       <FileUploadZone
         selectedFile={selectedFile}
         onFileSelect={parseFile}
@@ -323,126 +472,25 @@ export function CsvViewer() {
 
       {headers.length > 0 && (
         <div className="max-w-full overflow-hidden rounded-lg border bg-card">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
-            <div>
-              <h3 className="text-sm font-semibold">CSV Preview</h3>
-              <p className="text-xs text-muted-foreground">
-                {isSearchPending
-                  ? "Searching retained rows..."
-                  : activeSearchQuery
-                    ? `${formatNumber(filteredRows.length)} matches from ${formatNumber(rows.length)} retained rows.`
-                    : `Showing and searching up to the first ${formatNumber(MAX_PREVIEW_ROWS)} rows.`}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center justify-end gap-2">
-              <div className="relative w-full min-w-56 sm:w-72">
-                <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search retained rows..."
-                  value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  className="h-8 pl-8 pr-8 text-sm"
-                />
-                {searchQuery && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    className="absolute right-0.5 top-1/2 size-7 -translate-y-1/2"
-                    onClick={() => setSearchQuery("")}
-                    aria-label="Clear search"
-                  >
-                    <X className="size-4" />
-                  </Button>
-                )}
-              </div>
-              {parseState === "parsing" && (
-                <Button variant="outline" size="sm" onClick={() => parserRef.current?.abort()}>
-                  Stop
-                </Button>
-              )}
-            </div>
-          </div>
-          <div
-            ref={tableContainerRef}
-            className="h-[620px] max-w-full overflow-auto"
-          >
-            <div className="w-max min-w-full">
-              <div className="sticky top-0 z-10 grid border-b bg-muted text-xs font-medium">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <div
-                    key={headerGroup.id}
-                    className="grid min-w-0"
-                    style={{ gridTemplateColumns }}
-                  >
-                    {headerGroup.headers.map((header) => {
-                      const color = getColumnColor(header.index);
-
-                      return (
-                        <div
-                          key={header.id}
-                          className={cn(
-                            "min-w-0 whitespace-nowrap border-r px-3 py-2 last:border-r-0",
-                            color.header,
-                          )}
-                          title={String(header.column.columnDef.header ?? "")}
-                        >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(header.column.columnDef.header, header.getContext())}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-              <div className="relative" style={{ height: totalSize }}>
-                {filteredRows.length === 0 && activeSearchQuery && !isSearchPending && (
-                  <div className="flex h-32 items-center justify-center px-4 text-sm text-muted-foreground">
-                    No rows match your search.
-                  </div>
-                )}
-                {visibleRows.map((virtualRow) => {
-                  const row = table.getRowModel().rows[virtualRow.index];
-
-                  return (
-                    <div
-                      key={row.id}
-                      className={cn(
-                        "absolute left-0 grid w-full border-b text-sm",
-                        virtualRow.index % 2 === 0 ? "bg-card" : "bg-muted/25",
-                      )}
-                      style={{
-                        height: virtualRow.size,
-                        transform: `translateY(${virtualRow.start}px)`,
-                        gridTemplateColumns,
-                      }}
-                    >
-                      {row.getVisibleCells().map((cell) => {
-                        const color = getColumnColor(cell.column.getIndex());
-
-                        return (
-                          <div
-                            key={cell.id}
-                            className={cn(
-                              "min-w-0 whitespace-nowrap border-r px-3 py-2 last:border-r-0",
-                              color.cell,
-                            )}
-                            title={String(cell.getValue() ?? "")}
-                          >
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          {previewToolbar}
+          {tablePreview}
         </div>
       )}
-    </div>
+    </>
   );
+
+  if (isFullscreen) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col bg-background p-3">
+        {headers.length > 0 && (
+          <>
+            {previewToolbar}
+            {tablePreview}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  return <div className="space-y-4">{content}</div>;
 }
