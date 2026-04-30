@@ -58,7 +58,6 @@ const COLUMN_COLOR_CLASSES = [
 type CsvRow = Record<string, string>;
 
 type ParseState = "idle" | "parsing" | "complete" | "error";
-type TableLayoutMode = "fit" | "scroll";
 
 function formatNumber(value: number): string {
   return new Intl.NumberFormat().format(value);
@@ -85,22 +84,15 @@ function normalizeRow(row: unknown, headers: string[]): CsvRow | null {
   }, {});
 }
 
-function getColumnWidth(header: string, rows: CsvRow[], mode: TableLayoutMode): string {
+function getColumnWidth(header: string, rows: CsvRow[]): string {
   const sampledRows = rows.slice(0, COLUMN_WIDTH_SAMPLE_SIZE);
   const longestValueLength = sampledRows.reduce(
     (maxLength, row) => Math.max(maxLength, row[header]?.length ?? 0),
     header.length,
   );
   const estimatedWidth = longestValueLength * 8 + 32;
-
-  if (mode === "scroll") {
-    const width = Math.min(Math.max(estimatedWidth, 88), 360);
-    return `${width}px`;
-  }
-
-  const minWidth = Math.min(Math.max(estimatedWidth, 72), 180);
-  const weight = Math.min(Math.max(longestValueLength, 8), 32);
-  return `minmax(${minWidth}px, ${weight}fr)`;
+  const width = Math.max(estimatedWidth, 88);
+  return `${width}px`;
 }
 
 function getColumnColor(index: number) {
@@ -112,7 +104,6 @@ export function CsvViewer() {
   const [headers, setHeaders] = useState<string[]>([]);
   const [rows, setRows] = useState<CsvRow[]>([]);
   const [parseState, setParseState] = useState<ParseState>("idle");
-  const [layoutMode, setLayoutMode] = useState<TableLayoutMode>("fit");
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -248,12 +239,11 @@ export function CsvViewer() {
 
   const visibleRows = virtualizer.getVirtualItems();
   const totalSize = virtualizer.getTotalSize();
-  const isScrollMode = layoutMode === "scroll";
   const activeSearchQuery = debouncedSearchQuery.trim();
   const isSearchPending = searchQuery !== debouncedSearchQuery;
   const gridTemplateColumns = useMemo(
-    () => headers.map((header) => getColumnWidth(header, filteredRows, layoutMode)).join(" "),
-    [headers, filteredRows, layoutMode],
+    () => headers.map((header) => getColumnWidth(header, filteredRows)).join(" "),
+    [headers, filteredRows],
   );
 
   return (
@@ -367,26 +357,6 @@ export function CsvViewer() {
                   </Button>
                 )}
               </div>
-              <div className="inline-flex rounded-md border bg-background p-0.5">
-                <Button
-                  type="button"
-                  variant={layoutMode === "fit" ? "secondary" : "ghost"}
-                  size="sm"
-                  className="h-7 px-2.5 text-xs"
-                  onClick={() => setLayoutMode("fit")}
-                >
-                  Fit Width
-                </Button>
-                <Button
-                  type="button"
-                  variant={layoutMode === "scroll" ? "secondary" : "ghost"}
-                  size="sm"
-                  className="h-7 px-2.5 text-xs"
-                  onClick={() => setLayoutMode("scroll")}
-                >
-                  Scroll Columns
-                </Button>
-              </div>
               {parseState === "parsing" && (
                 <Button variant="outline" size="sm" onClick={() => parserRef.current?.abort()}>
                   Stop
@@ -396,12 +366,9 @@ export function CsvViewer() {
           </div>
           <div
             ref={tableContainerRef}
-            className={cn(
-              "h-[620px] max-w-full overflow-y-auto",
-              isScrollMode ? "overflow-x-auto" : "overflow-x-hidden",
-            )}
+            className="h-[620px] max-w-full overflow-auto"
           >
-            <div className={cn("min-w-0", isScrollMode && "w-max min-w-full")}>
+            <div className="w-max min-w-full">
               <div className="sticky top-0 z-10 grid border-b bg-muted text-xs font-medium">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <div
@@ -416,7 +383,7 @@ export function CsvViewer() {
                         <div
                           key={header.id}
                           className={cn(
-                            "min-w-0 truncate border-r px-3 py-2 last:border-r-0",
+                            "min-w-0 whitespace-nowrap border-r px-3 py-2 last:border-r-0",
                             color.header,
                           )}
                           title={String(header.column.columnDef.header ?? "")}
@@ -459,7 +426,7 @@ export function CsvViewer() {
                           <div
                             key={cell.id}
                             className={cn(
-                              "min-w-0 truncate border-r px-3 py-2 last:border-r-0",
+                              "min-w-0 whitespace-nowrap border-r px-3 py-2 last:border-r-0",
                               color.cell,
                             )}
                             title={String(cell.getValue() ?? "")}
