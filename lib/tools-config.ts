@@ -14,6 +14,7 @@ import {
   Type,
   FileText,
   Image,
+  Images,
   Layers,
   BookOpen,
   Network,
@@ -150,6 +151,13 @@ export const tools: ToolConfig[] = [
     name: "Image Converter",
     icon: Image,
     description: "Convert PNG, JPG, and WebP images",
+  },
+  {
+    id: "screenshot-composer",
+    slug: "screenshot-composer",
+    name: "Screenshot Composer",
+    icon: Images,
+    description: "Compose polished screenshots locally",
   },
   {
     id: "favicon-generator",

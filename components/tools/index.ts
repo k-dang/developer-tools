@@ -12,6 +12,7 @@ export { CharacterCounter } from "./character-counter";
 export { LoremIpsum } from "./lorem-ipsum";
 export { CronAssistant } from "./cron-assistant";
 export { ImageConverter } from "./image-converter";
+export { ScreenshotComposer } from "./screenshot-composer";
 export { FaviconGenerator } from "./favicon-generator";
 export { RubySandbox } from "./ruby-sandbox";
 export { TechStackReference } from "./tech-stack-reference";
