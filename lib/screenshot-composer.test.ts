@@ -85,6 +85,7 @@ describe("calculateComposition", () => {
     const composition = calculateComposition(
       { width: 3840, height: 2160 },
       {
+        ...DEFAULT_COMPOSER_CONTROLS,
         canvasPreset: "open-graph",
         padding: 120,
         scale: 1.35,

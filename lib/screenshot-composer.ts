@@ -23,8 +23,11 @@ export type BackgroundPreset = {
 
 export type ComposerControls = {
   canvasPreset: CanvasPresetId;
+  backgroundPreset: BackgroundPresetId;
   padding: number;
   scale: number;
+  cornerRadius: number;
+  shadowStrength: number;
   xOffset: number;
   yOffset: number;
 };
@@ -42,8 +45,15 @@ export type Composition = {
     height: number;
     preset: CanvasPreset;
   };
+  background: BackgroundPreset;
   image: {
     rect: Rect;
+    cornerRadius: number;
+    shadow: {
+      blur: number;
+      offsetY: number;
+      opacity: number;
+    };
   };
   padding: number;
 };
@@ -67,8 +77,11 @@ export const BACKGROUND_PRESETS: readonly BackgroundPreset[] = [
 
 export const DEFAULT_COMPOSER_CONTROLS: ComposerControls = {
   canvasPreset: "wide",
+  backgroundPreset: "aurora",
   padding: 96,
   scale: 1,
+  cornerRadius: 18,
+  shadowStrength: 0.65,
   xOffset: 0,
   yOffset: 0,
 };
@@ -89,9 +102,12 @@ export function calculateComposition(
   const imageHeight = positiveFinite(imageDimensions.height, MIN_CANVAS_SIZE);
   const padding = nonNegativeFinite(controls.padding);
   const scale = positiveFinite(controls.scale, 1);
+  const cornerRadius = nonNegativeFinite(controls.cornerRadius);
+  const shadowStrength = clampedFinite(controls.shadowStrength, 0, 1, 0);
   const xOffset = normalizedOffset(controls.xOffset);
   const yOffset = normalizedOffset(controls.yOffset);
   const preset = getCanvasPreset(controls.canvasPreset);
+  const background = getBackgroundPreset(controls.backgroundPreset);
 
   const canvas =
     preset.id === "auto"
@@ -121,12 +137,19 @@ export function calculateComposition(
       height: canvasHeight,
       preset,
     },
+    background,
     image: {
       rect: {
         x: padding + remainingX / 2 + (remainingX / 2) * xOffset,
         y: padding + remainingY / 2 + (remainingY / 2) * yOffset,
         width: drawWidth,
         height: drawHeight,
+      },
+      cornerRadius,
+      shadow: {
+        blur: Math.round(64 * shadowStrength),
+        offsetY: Math.round(28 * shadowStrength),
+        opacity: Number((0.35 * shadowStrength).toFixed(3)),
       },
     },
     padding,
@@ -144,4 +167,9 @@ function nonNegativeFinite(value: number): number {
 function normalizedOffset(value: number): number {
   if (!Number.isFinite(value)) return 0;
   return Math.max(-1, Math.min(1, value));
+}
+
+function clampedFinite(value: number, min: number, max: number, fallback: number): number {
+  if (!Number.isFinite(value)) return fallback;
+  return Math.max(min, Math.min(max, value));
 }
