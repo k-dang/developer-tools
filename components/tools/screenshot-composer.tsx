@@ -2,7 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Image as ImageIcon, RotateCcw, SlidersHorizontal, Upload } from "lucide-react";
+import {
+  Download,
+  Image as ImageIcon,
+  RotateCcw,
+  SlidersHorizontal,
+  Upload,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileUploadZone } from "@/components/file-upload-zone";
@@ -21,7 +27,9 @@ import {
   DEFAULT_COMPOSER_CONTROLS,
   type BackgroundPresetId,
   type CanvasPresetId,
+  type Composition,
   type ComposerControls,
+  type Rect,
   calculateComposition,
 } from "@/lib/screenshot-composer";
 
@@ -44,6 +52,115 @@ function getImageFormat(file: File): string {
 
 function gradientCss(angle: number, stops: readonly [string, string, string]): string {
   return `linear-gradient(${angle}deg, ${stops[0]} 0%, ${stops[1]} 52%, ${stops[2]} 100%)`;
+}
+
+function loadImageElement(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const image = new window.Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("The selected image could not be loaded for export."));
+    image.src = url;
+  });
+}
+
+function getGradientPoints(width: number, height: number, angle: number) {
+  const radians = ((angle - 90) * Math.PI) / 180;
+  const lineLength = Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians));
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const halfX = (Math.cos(radians) * lineLength) / 2;
+  const halfY = (Math.sin(radians) * lineLength) / 2;
+
+  return {
+    x0: centerX - halfX,
+    y0: centerY - halfY,
+    x1: centerX + halfX,
+    y1: centerY + halfY,
+  };
+}
+
+function addRoundedRectPath(context: CanvasRenderingContext2D, rect: Rect, radius: number) {
+  const safeRadius = Math.max(0, Math.min(radius, rect.width / 2, rect.height / 2));
+
+  context.beginPath();
+  context.moveTo(rect.x + safeRadius, rect.y);
+  context.lineTo(rect.x + rect.width - safeRadius, rect.y);
+  context.quadraticCurveTo(rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + safeRadius);
+  context.lineTo(rect.x + rect.width, rect.y + rect.height - safeRadius);
+  context.quadraticCurveTo(
+    rect.x + rect.width,
+    rect.y + rect.height,
+    rect.x + rect.width - safeRadius,
+    rect.y + rect.height,
+  );
+  context.lineTo(rect.x + safeRadius, rect.y + rect.height);
+  context.quadraticCurveTo(rect.x, rect.y + rect.height, rect.x, rect.y + rect.height - safeRadius);
+  context.lineTo(rect.x, rect.y + safeRadius);
+  context.quadraticCurveTo(rect.x, rect.y, rect.x + safeRadius, rect.y);
+  context.closePath();
+}
+
+function getExportFileName(file: File): string {
+  const baseName = file.name.replace(/\.[^/.]+$/, "").trim() || "screenshot";
+  return `${baseName}-composed.png`;
+}
+
+async function renderCompositionToBlob(
+  imageUrl: string,
+  composition: Composition,
+): Promise<Blob> {
+  const image = await loadImageElement(imageUrl);
+  const canvas = document.createElement("canvas");
+  canvas.width = composition.canvas.width;
+  canvas.height = composition.canvas.height;
+
+  const context = canvas.getContext("2d");
+  if (!context) {
+    throw new Error("Canvas rendering is not available in this browser.");
+  }
+
+  const points = getGradientPoints(
+    composition.canvas.width,
+    composition.canvas.height,
+    composition.background.angle,
+  );
+  const gradient = context.createLinearGradient(points.x0, points.y0, points.x1, points.y1);
+  gradient.addColorStop(0, composition.background.stops[0]);
+  gradient.addColorStop(0.52, composition.background.stops[1]);
+  gradient.addColorStop(1, composition.background.stops[2]);
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, composition.canvas.width, composition.canvas.height);
+
+  context.save();
+  context.shadowColor = `rgba(0, 0, 0, ${composition.image.shadow.opacity})`;
+  context.shadowBlur = composition.image.shadow.blur;
+  context.shadowOffsetY = composition.image.shadow.offsetY;
+  context.fillStyle = "rgba(0, 0, 0, 0.18)";
+  addRoundedRectPath(context, composition.image.rect, composition.image.cornerRadius);
+  context.fill();
+  context.restore();
+
+  context.save();
+  addRoundedRectPath(context, composition.image.rect, composition.image.cornerRadius);
+  context.clip();
+  context.drawImage(
+    image,
+    composition.image.rect.x,
+    composition.image.rect.y,
+    composition.image.rect.width,
+    composition.image.rect.height,
+  );
+  context.restore();
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob);
+        return;
+      }
+      reject(new Error("PNG export failed."));
+    }, "image/png");
+  });
 }
 
 function ControlSlider({
@@ -86,6 +203,8 @@ export function ScreenshotComposer() {
   const [imageDimensions, setImageDimensions] = useState<ImageDimensions | null>(null);
   const [controls, setControls] = useState<ComposerControls>(DEFAULT_COMPOSER_CONTROLS);
   const [error, setError] = useState<string | null>(null);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
   const inputUrlRef = useRef<string | null>(null);
   const composition = imageDimensions ? calculateComposition(imageDimensions, controls) : null;
   const previewWidth = composition ? `min(100%, ${composition.canvas.width}px)` : undefined;
@@ -116,6 +235,7 @@ export function ScreenshotComposer() {
     setInputUrl(url);
     setImageDimensions(null);
     setError(null);
+    setExportError(null);
 
     const image = new window.Image();
     image.onload = () => {
@@ -146,6 +266,36 @@ export function ScreenshotComposer() {
     setInputUrl(null);
     setImageDimensions(null);
     setError(null);
+    setExportError(null);
+    setIsExporting(false);
+  };
+
+  const handleExport = async () => {
+    if (!inputFile || !inputUrl || !composition) {
+      setExportError("Upload an image before exporting.");
+      return;
+    }
+
+    setIsExporting(true);
+    setExportError(null);
+
+    try {
+      const blob = await renderCompositionToBlob(inputUrl, composition);
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = getExportFileName(inputFile);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(downloadUrl);
+    } catch (exportFailure) {
+      setExportError(
+        exportFailure instanceof Error ? exportFailure.message : "PNG export failed.",
+      );
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -368,6 +518,24 @@ export function ScreenshotComposer() {
               displayValue={`${Math.round(controls.yOffset * 100)}%`}
               onChange={(yOffset) => updateControls({ yOffset })}
             />
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-lg">
+          <CardHeader>
+            <CardTitle>Export</CardTitle>
+            <CardDescription>Download the current PNG</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button className="w-full" disabled={!composition || isExporting} onClick={handleExport}>
+              <Download className="size-4" />
+              {isExporting ? "Exporting" : "Export PNG"}
+            </Button>
+            {exportError && (
+              <div className="rounded-md border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
+                {exportError}
+              </div>
+            )}
           </CardContent>
         </Card>
 
