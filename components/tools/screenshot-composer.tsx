@@ -184,7 +184,7 @@ function ControlSlider({
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-3">
         <Label className="text-xs font-medium text-muted-foreground">{label}</Label>
-        <span className="text-xs tabular-nums text-muted-foreground">{displayValue}</span>
+        <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{displayValue}</span>
       </div>
       <Slider
         value={[value]}
@@ -265,6 +265,7 @@ export function ScreenshotComposer() {
     setInputFile(null);
     setInputUrl(null);
     setImageDimensions(null);
+    setControls(DEFAULT_COMPOSER_CONTROLS);
     setError(null);
     setExportError(null);
     setIsExporting(false);
@@ -305,7 +306,7 @@ export function ScreenshotComposer() {
           <h3 className="text-base font-semibold text-foreground">Preview</h3>
           <p className="text-sm text-muted-foreground">Local image layer on the export surface</p>
         </div>
-        <div className="flex min-h-[420px] items-center justify-center p-4 sm:min-h-[560px] sm:p-6">
+        <div className="flex min-h-[360px] items-center justify-center p-3 sm:min-h-[560px] sm:p-6">
           {inputUrl && composition ? (
             <div className="flex size-full items-center justify-center rounded-lg bg-muted/70 p-2 sm:p-6">
               <div
@@ -335,13 +336,13 @@ export function ScreenshotComposer() {
               </div>
             </div>
           ) : (
-            <div className="flex w-full max-w-md flex-col items-center justify-center rounded-lg border border-dashed bg-muted/40 px-6 py-16 text-center">
+            <div className="flex w-full max-w-md flex-col items-center justify-center rounded-lg border border-dashed bg-muted/40 px-6 py-14 text-center">
               <ImageIcon className="mb-4 size-12 text-muted-foreground" />
               <p className="text-sm font-medium text-foreground">
-                Upload a screenshot to preview it
+                Upload a screenshot
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                PNG, JPEG, and WebP files stay in this browser.
+                PNG, JPEG, or WebP. Preview and export stay in this browser.
               </p>
             </div>
           )}
@@ -474,19 +475,19 @@ export function ScreenshotComposer() {
               onChange={(padding) => updateControls({ padding })}
             />
             <ControlSlider
-              label="Image scale"
+              label="Scale"
               value={controls.scale}
-              min={0.65}
-              max={1.35}
+              min={0.7}
+              max={1.25}
               step={0.01}
               displayValue={`${Math.round(controls.scale * 100)}%`}
               onChange={(scale) => updateControls({ scale })}
             />
             <ControlSlider
-              label="Corner radius"
+              label="Radius"
               value={controls.cornerRadius}
               min={0}
-              max={40}
+              max={48}
               step={1}
               displayValue={`${controls.cornerRadius}px`}
               onChange={(cornerRadius) => updateControls({ cornerRadius })}
@@ -503,8 +504,8 @@ export function ScreenshotComposer() {
             <ControlSlider
               label="Horizontal"
               value={controls.xOffset}
-              min={-1}
-              max={1}
+              min={-0.75}
+              max={0.75}
               step={0.01}
               displayValue={`${Math.round(controls.xOffset * 100)}%`}
               onChange={(xOffset) => updateControls({ xOffset })}
@@ -512,8 +513,8 @@ export function ScreenshotComposer() {
             <ControlSlider
               label="Vertical"
               value={controls.yOffset}
-              min={-1}
-              max={1}
+              min={-0.75}
+              max={0.75}
               step={0.01}
               displayValue={`${Math.round(controls.yOffset * 100)}%`}
               onChange={(yOffset) => updateControls({ yOffset })}

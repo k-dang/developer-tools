@@ -246,6 +246,7 @@ export function CsvViewer() {
     );
   }, [debouncedSearchQuery, headers, rows]);
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table's useReactTable is incompatible with React Compiler memoization.
   const table = useReactTable({
     data: filteredRows,
     columns,
