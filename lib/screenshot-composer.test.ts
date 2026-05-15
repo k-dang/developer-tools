@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  BACKGROUND_PRESETS,
   DEFAULT_COMPOSER_CONTROLS,
   calculateComposition,
   getBackgroundPreset,
@@ -119,5 +120,26 @@ describe("getBackgroundPreset", () => {
       angle: 140,
       stops: ["#064e3b", "#0f766e", "#67e8f9"],
     });
+  });
+
+  it("includes a broad set of valid gradient presets", () => {
+    expect(BACKGROUND_PRESETS).toHaveLength(9);
+    expect(BACKGROUND_PRESETS.map((preset) => preset.id)).toEqual([
+      "aurora",
+      "graphite",
+      "lagoon",
+      "sunrise",
+      "ember",
+      "violet",
+      "citrus",
+      "midnight",
+      "rose",
+    ]);
+
+    for (const preset of BACKGROUND_PRESETS) {
+      expect(preset.stops).toHaveLength(3);
+      expect(preset.stops.every((stop) => /^#[0-9a-f]{6}$/i.test(stop))).toBe(true);
+      expect(Number.isFinite(preset.angle)).toBe(true);
+    }
   });
 });

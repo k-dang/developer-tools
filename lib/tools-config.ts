@@ -16,7 +16,6 @@ import {
   Image,
   Images,
   Layers,
-  BookOpen,
   Network,
   Table,
   type LucideIcon,
@@ -173,14 +172,6 @@ export const tools: ToolConfig[] = [
     icon: RubyIcon,
     description: "Ruby code editor with syntax highlighting",
     category: "sandboxes",
-  },
-  {
-    id: "tech-stack-reference",
-    slug: "tech-stack-reference",
-    name: "Tech Stack Reference",
-    icon: BookOpen,
-    description: "Pattern library for Ruby/Rails, Kotlin/Maven, Flink, and Mise",
-    category: "tools",
   },
 ];
 

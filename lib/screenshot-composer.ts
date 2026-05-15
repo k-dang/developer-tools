@@ -5,7 +5,16 @@ export type ImageDimensions = {
 
 export type CanvasPresetId = "auto" | "wide" | "open-graph" | "square" | "portrait";
 
-export type BackgroundPresetId = "aurora" | "graphite" | "lagoon" | "sunrise";
+export type BackgroundPresetId =
+  | "aurora"
+  | "graphite"
+  | "lagoon"
+  | "sunrise"
+  | "ember"
+  | "violet"
+  | "citrus"
+  | "midnight"
+  | "rose";
 
 export type CanvasPreset = {
   id: CanvasPresetId;
@@ -73,6 +82,11 @@ export const BACKGROUND_PRESETS: readonly BackgroundPreset[] = [
   { id: "graphite", name: "Graphite", angle: 145, stops: ["#111827", "#374151", "#94a3b8"] },
   { id: "lagoon", name: "Lagoon", angle: 140, stops: ["#064e3b", "#0f766e", "#67e8f9"] },
   { id: "sunrise", name: "Sunrise", angle: 135, stops: ["#7f1d1d", "#f97316", "#fde68a"] },
+  { id: "ember", name: "Ember", angle: 125, stops: ["#450a0a", "#dc2626", "#fbbf24"] },
+  { id: "violet", name: "Violet", angle: 150, stops: ["#312e81", "#a855f7", "#f0abfc"] },
+  { id: "citrus", name: "Citrus", angle: 130, stops: ["#14532d", "#84cc16", "#fef08a"] },
+  { id: "midnight", name: "Midnight", angle: 155, stops: ["#020617", "#1d4ed8", "#38bdf8"] },
+  { id: "rose", name: "Rose", angle: 140, stops: ["#4a044e", "#e11d48", "#fecdd3"] },
 ];
 
 export const DEFAULT_COMPOSER_CONTROLS: ComposerControls = {

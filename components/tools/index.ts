@@ -15,7 +15,6 @@ export { ImageConverter } from "./image-converter";
 export { ScreenshotComposer } from "./screenshot-composer";
 export { FaviconGenerator } from "./favicon-generator";
 export { RubySandbox } from "./ruby-sandbox";
-export { TechStackReference } from "./tech-stack-reference";
 export { MarkdownViewer } from "./markdown-viewer";
 export { GraphqlPrettifier } from "./graphql-prettifier";
 export { CsvViewer } from "./csv-viewer";
