@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { editor } from "monaco-editor";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -79,37 +79,36 @@ type MermaidBlockProps = {
 };
 
 function MermaidBlock({ code }: MermaidBlockProps) {
-  const elementId = useRef(`mermaid-${Math.random().toString(36).slice(2, 11)}`);
+  const rawId = useId();
+  const elementId = `mermaid-${rawId.replace(/:/g, "")}`;
   const [svg, setSvg] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [isRendering, setIsRendering] = useState(false);
+  const [renderedCode, setRenderedCode] = useState<string | null>(null);
+  const isRendering = renderedCode !== code;
 
   useEffect(() => {
     let isActive = true;
-    setIsRendering(true);
-    setError("");
 
     (async () => {
+      setError("");
       try {
         const mermaid = await ensureMermaidInitialized("dark");
-        const { svg: outputSvg } = await mermaid.render(elementId.current, code);
+        const { svg: outputSvg } = await mermaid.render(elementId, code);
         if (!isActive) return;
         setSvg(outputSvg);
+        setRenderedCode(code);
       } catch (err) {
         if (!isActive) return;
         setSvg("");
         setError(err instanceof Error ? err.message : "Unable to render Mermaid diagram.");
-      } finally {
-        if (isActive) {
-          setIsRendering(false);
-        }
+        setRenderedCode(code);
       }
     })();
 
     return () => {
       isActive = false;
     };
-  }, [code]);
+  }, [code, elementId]);
 
   if (error) {
     return (

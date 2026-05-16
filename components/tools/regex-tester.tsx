@@ -10,7 +10,9 @@ import { Label } from "@/components/ui/label";
 export function RegexTester() {
   const [pattern, setPattern] = useState("\\b\\w+@\\w+\\.\\w+\\b");
   const [flags, setFlags] = useState("g");
-  const [testString, setTestString] = useState("The quick brown fox jumps over the lazy dog. Email: test@example.com, Phone: 555-1234, Date: 2024-01-15");
+  const [testString, setTestString] = useState(
+    "The quick brown fox jumps over the lazy dog. Email: test@example.com, Phone: 555-1234, Date: 2024-01-15",
+  );
   const [matches, setMatches] = useState<string[]>([]);
 
   const testRegex = () => {

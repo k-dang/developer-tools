@@ -2,12 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Papa, { type ParseResult } from "papaparse";
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-} from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   AlertCircle,
@@ -178,7 +173,9 @@ export function CsvViewer() {
         parserRef.current = parser;
 
         if (headers.length === 0 && results.meta.fields) {
-          setHeaders(normalizeHeaders(results.meta.fields, Object.keys(results.data[0] ?? {}).length));
+          setHeaders(
+            normalizeHeaders(results.meta.fields, Object.keys(results.data[0] ?? {}).length),
+          );
         }
 
         const activeHeaders = normalizeHeaders(

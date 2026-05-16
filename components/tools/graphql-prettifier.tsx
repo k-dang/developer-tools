@@ -189,9 +189,7 @@ export function GraphqlPrettifier() {
       }
       setOutput(formatted);
     } catch (err) {
-      setOutput(
-        `Error: ${err instanceof Error ? err.message : "Failed to format GraphQL"}`
-      );
+      setOutput(`Error: ${err instanceof Error ? err.message : "Failed to format GraphQL"}`);
     }
   };
 

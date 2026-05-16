@@ -2,13 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import {
-  Download,
-  Image as ImageIcon,
-  RotateCcw,
-  SlidersHorizontal,
-  Upload,
-} from "lucide-react";
+import { Download, Image as ImageIcon, RotateCcw, SlidersHorizontal, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileUploadZone } from "@/components/file-upload-zone";
@@ -105,10 +99,7 @@ function getExportFileName(file: File): string {
   return `${baseName}-composed.png`;
 }
 
-async function renderCompositionToBlob(
-  imageUrl: string,
-  composition: Composition,
-): Promise<Blob> {
+async function renderCompositionToBlob(imageUrl: string, composition: Composition): Promise<Blob> {
   const image = await loadImageElement(imageUrl);
   const canvas = document.createElement("canvas");
   canvas.width = composition.canvas.width;
@@ -291,9 +282,7 @@ export function ScreenshotComposer() {
       link.remove();
       URL.revokeObjectURL(downloadUrl);
     } catch (exportFailure) {
-      setExportError(
-        exportFailure instanceof Error ? exportFailure.message : "PNG export failed.",
-      );
+      setExportError(exportFailure instanceof Error ? exportFailure.message : "PNG export failed.");
     } finally {
       setIsExporting(false);
     }
@@ -338,9 +327,7 @@ export function ScreenshotComposer() {
           ) : (
             <div className="flex w-full max-w-md flex-col items-center justify-center rounded-lg border border-dashed bg-muted/40 px-6 py-14 text-center">
               <ImageIcon className="mb-4 size-12 text-muted-foreground" />
-              <p className="text-sm font-medium text-foreground">
-                Upload a screenshot
-              </p>
+              <p className="text-sm font-medium text-foreground">Upload a screenshot</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 PNG, JPEG, or WebP. Preview and export stay in this browser.
               </p>
@@ -528,7 +515,11 @@ export function ScreenshotComposer() {
             <CardDescription>Download the current PNG</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full" disabled={!composition || isExporting} onClick={handleExport}>
+            <Button
+              className="w-full"
+              disabled={!composition || isExporting}
+              onClick={handleExport}
+            >
               <Download className="size-4" />
               {isExporting ? "Exporting" : "Export PNG"}
             </Button>
