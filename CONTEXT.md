@@ -19,3 +19,9 @@ The composed image is exported from a preset-sized canvas. V1 supports aspect ra
 ### Background Preset
 
 A curated gradient background option for the export canvas. V1 uses preset backgrounds only and does not expose custom gradient color stops.
+
+### Context Drop
+
+A single markdown artifact one AI coding agent submits so another agent (or a human) can pick up the same task with full context. Each Context Drop is reachable at a unique **Drop Link** and is served as raw markdown — it is the canonical, ingestible form, not a rendered page. Short form: "Drop".
+
+A Context Drop is *intended* as curated handoff content (task, decisions, constraints, open questions), not an automatic dump of a codebase. This is a usage convention, not a v1-enforced rule: the only hard size limit in v1 is the Vercel platform ceiling (4.5 MB on both the create request and the read response). No smaller product cap is enforced.
