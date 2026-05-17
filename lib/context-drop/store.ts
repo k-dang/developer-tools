@@ -18,7 +18,7 @@ export async function createDrop(input: {
   };
 
   await put(pathnameFor(drop.id), JSON.stringify(drop), {
-    access: "public",
+    access: "private",
     addRandomSuffix: false,
     allowOverwrite: false,
     contentType: "application/json",
@@ -29,7 +29,7 @@ export async function createDrop(input: {
 
 /** Fetch a Drop by id. Returns null for an unknown id. */
 export async function getDrop(id: string): Promise<ContextDrop | null> {
-  const result = await get(pathnameFor(id), { access: "public" });
+  const result = await get(pathnameFor(id), { access: "private" });
   if (!result) return null;
 
   const raw = await new Response(result.stream).text();
