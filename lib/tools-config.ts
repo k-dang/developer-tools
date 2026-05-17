@@ -18,6 +18,7 @@ import {
   Layers,
   Network,
   Table,
+  Share2,
   type LucideIcon,
 } from "lucide-react";
 import { RubyIcon } from "@/components/ui/ruby-icon";
@@ -164,6 +165,13 @@ export const tools: ToolConfig[] = [
     name: "Favicon Generator",
     icon: Layers,
     description: "Generate favicon images (ICO & PNG)",
+  },
+  {
+    id: "context-drop",
+    slug: "context-drop",
+    name: "Context Drop",
+    icon: Share2,
+    description: "Hand off curated context between AI agents via a single link",
   },
   {
     id: "ruby-sandbox",
