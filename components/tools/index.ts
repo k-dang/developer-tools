@@ -19,3 +19,4 @@ export { MarkdownViewer } from "./markdown-viewer";
 export { GraphqlPrettifier } from "./graphql-prettifier";
 export { CsvViewer } from "./csv-viewer";
 export { ContextDrop } from "./context-drop";
+export { ContextDropManager } from "./context-drop-manager";

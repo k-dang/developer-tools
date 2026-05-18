@@ -5,7 +5,6 @@ import type { ContextDrop, DropSummary } from "./types";
 const PREFIX = "drops/";
 const pathnameFor = (id: string) => `${PREFIX}${id}.json`;
 
-/** Persist a new Drop. Returns the stored record (id is freshly generated). */
 export async function createDrop(input: {
   markdown: string;
   title?: string;
@@ -27,7 +26,6 @@ export async function createDrop(input: {
   return drop;
 }
 
-/** Fetch a Drop by id. Returns null for an unknown id. */
 export async function getDrop(id: string): Promise<ContextDrop | null> {
   const result = await get(pathnameFor(id), { access: "private" });
   if (!result) return null;
@@ -36,7 +34,6 @@ export async function getDrop(id: string): Promise<ContextDrop | null> {
   return JSON.parse(raw) as ContextDrop;
 }
 
-/** List all Drops as summaries (no markdown body) for the dev-only manage UI. */
 export async function listDrops(): Promise<DropSummary[]> {
   const summaries: DropSummary[] = [];
   let cursor: string | undefined;
