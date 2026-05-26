@@ -23,7 +23,7 @@ export default async function ContextDropPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-3">
+    <div className="w-full space-y-3">
       <ContextDrop />
       {showManager && (
         <ContextDropManager initialDrops={drops} initialError={loadError} />
