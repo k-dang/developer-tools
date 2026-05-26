@@ -1,21 +1,10 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { CopyButton } from "@/components/ui/copy-button";
-import { ArrowRight, Check, Share2, X } from "lucide-react";
+import { ArrowRight, Check, X } from "lucide-react";
 
 export function ContextDrop() {
-  // Resolved on the client so the config reflects the host the operator is
-  // actually viewing (localhost in dev, the deployed domain in prod). The
-  // server snapshot is a placeholder; useSyncExternalStore swaps in the real
-  // origin after hydration without a mismatch.
   const origin = useSyncExternalStore(
     () => () => {},
     () => window.location.origin,
@@ -39,183 +28,227 @@ export function ContextDrop() {
   const cliCommand = `claude mcp add --transport http context-drop ${mcpUrl}`;
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6">
-      <Card className="border-border bg-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-foreground">
-            <Share2 className="size-5" />
-            What is a Context Drop?
-          </CardTitle>
-          <CardDescription>
-            A single markdown handoff one AI agent publishes and another agent — or a
-            human — picks up at a permanent link.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm text-muted-foreground">
-          <p>
-            When work moves between agents — a new session, a different tool, a
-            teammate&apos;s agent — the receiving side starts cold. The{" "}
-            <em>why</em> (the task, the decisions made, the constraints, the open
-            questions) is stranded in a conversation the next agent cannot see.
-          </p>
-          <p>
-            A producing agent calls one MCP tool,{" "}
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">
-              create_drop
-            </code>
-            , and gets back a Drop Link. Whoever picks up the task fetches that link
-            and receives the markdown verbatim — no rendering, no auth, nothing else
-            to install on the receiving side.
-          </p>
-        </CardContent>
-      </Card>
+    <div className="w-full space-y-3">
+      {/* ── HERO ─────────────────────────────────────────── */}
+      <div className="border border-border bg-card p-6 sm:p-8">
+        <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          Context Drop
+        </p>
+        <p className="mb-6 max-w-lg text-sm text-muted-foreground">
+          When work moves between agents — a new session, a different tool, a
+          teammate&apos;s agent — the receiving side starts cold. The{" "}
+          <em>why</em> is stranded in a conversation the next agent cannot see.
+        </p>
 
-      <Card className="border-border bg-card">
-        <CardHeader>
-          <CardTitle className="text-foreground">Connect your agent</CardTitle>
-          <CardDescription>
+        {/* Flow visualization */}
+        <div className="flex items-stretch overflow-x-auto">
+          <FlowBox label="producing agent" code="create_drop()" />
+          <FlowConnector />
+          <FlowBox label="drop link" code="/h/<id>" highlighted />
+          <FlowConnector />
+          <FlowBox label="consuming agent" code="fetch(url)" />
+        </div>
+      </div>
+
+      {/* ── TWO-COLUMN: Connect + How it works ───────────── */}
+      <div className="grid gap-3 lg:grid-cols-[3fr_2fr]">
+        {/* Connect your agent */}
+        <div className="border border-border bg-card p-6">
+          <p className="mb-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            Setup
+          </p>
+          <h2 className="mb-1 text-base font-medium text-foreground">
+            Connect your agent
+          </h2>
+          <p className="mb-5 text-sm text-muted-foreground">
             Point a coding agent at this MCP server to expose{" "}
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">
+            <code className="rounded-none bg-muted px-1 font-mono text-foreground">
               create_drop
             </code>
-            . The receiving agent needs none of this — it just fetches the link.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-foreground">
-              MCP server configuration
-            </p>
-            <div className="relative">
-              <pre className="overflow-x-auto rounded-md border border-border bg-muted p-4 pr-14 font-mono text-xs text-foreground">
-                {mcpJson}
-              </pre>
-              <div className="absolute right-2 top-2">
-                <CopyButton textToCopy={mcpJson} />
+            . The receiving agent needs none of this — it just fetches the
+            link.
+          </p>
+
+          <div className="space-y-4">
+            <div>
+              <p className="mb-2 text-xs text-muted-foreground">
+                MCP server configuration
+              </p>
+              <div className="relative">
+                <pre className="overflow-x-auto border border-border bg-muted p-3 pr-12 font-mono text-xs text-foreground">
+                  {mcpJson}
+                </pre>
+                <div className="absolute right-2 top-2">
+                  <CopyButton textToCopy={mcpJson} />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-2 text-xs text-muted-foreground">
+                Claude Code CLI
+              </p>
+              <div className="relative">
+                <pre className="overflow-x-auto border border-border bg-muted p-3 pr-12 font-mono text-xs text-foreground">
+                  {cliCommand}
+                </pre>
+                <div className="absolute right-2 top-2">
+                  <CopyButton textToCopy={cliCommand} />
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-foreground">
-              Or, with the Claude Code CLI
-            </p>
-            <div className="relative">
-              <pre className="overflow-x-auto rounded-md border border-border bg-muted p-4 pr-14 font-mono text-xs text-foreground">
-                {cliCommand}
-              </pre>
-              <div className="absolute right-2 top-2">
-                <CopyButton textToCopy={cliCommand} />
+        {/* How it works */}
+        <div className="border border-border bg-card p-6">
+          <p className="mb-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            Flow
+          </p>
+          <h2 className="mb-5 text-base font-medium text-foreground">
+            How it works
+          </h2>
+
+          <div>
+            {[
+              {
+                n: "01",
+                title: "Produce",
+                body: (
+                  <>
+                    Call{" "}
+                    <code className="rounded-none bg-muted px-1 font-mono text-xs text-foreground">
+                      create_drop(markdown, title?)
+                    </code>{" "}
+                    with the curated handoff.
+                  </>
+                ),
+              },
+              {
+                n: "02",
+                title: "Receive link",
+                body: (
+                  <>
+                    Get back a permanent link like{" "}
+                    <code className="rounded-none bg-muted px-1 font-mono text-xs text-foreground">
+                      {origin}/h/&lt;id&gt;
+                    </code>
+                    .
+                  </>
+                ),
+              },
+              {
+                n: "03",
+                title: "Consume",
+                body: "The receiving agent fetches that URL and gets the markdown byte-for-byte — no MCP, no auth.",
+              },
+            ].map((step, i, arr) => (
+              <div key={step.n} className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="flex size-7 shrink-0 items-center justify-center border border-border bg-muted font-mono text-[11px] text-muted-foreground">
+                    {step.n}
+                  </div>
+                  {i < arr.length - 1 && (
+                    <div className="my-1 w-px flex-1 bg-border" />
+                  )}
+                </div>
+                <div className={i < arr.length - 1 ? "pb-5" : ""}>
+                  <p className="mb-1 text-sm font-medium text-foreground">
+                    {step.title}
+                  </p>
+                  <p className="text-sm text-muted-foreground">{step.body}</p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card className="border-border bg-card">
-        <CardHeader>
-          <CardTitle className="text-foreground">How it works</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ol className="space-y-3 text-sm text-muted-foreground">
-            <li className="flex gap-3">
-              <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground">
-                1
-              </span>
-              <span>
-                The producing agent calls{" "}
-                <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">
-                  create_drop(markdown, title?)
-                </code>{" "}
-                with the curated handoff.
-              </span>
-            </li>
-            <li className="flex gap-3">
-              <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground">
-                2
-              </span>
-              <span>
-                It receives a permanent Drop Link like{" "}
-                <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">
-                  {origin}/h/&lt;id&gt;
-                </code>
-                .
-              </span>
-            </li>
-            <li className="flex gap-3">
-              <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground">
-                3
-              </span>
-              <span>
-                The receiving agent fetches that URL and gets the markdown
-                byte-for-byte — no MCP server, no auth, no rendering.
-              </span>
-            </li>
-          </ol>
-        </CardContent>
-      </Card>
-
-      <Card className="border-border bg-card">
-        <CardHeader>
-          <CardTitle className="text-foreground">
+      {/* ── HANDOFF GUIDE ────────────────────────────────── */}
+      <div className="border border-border bg-card">
+        <div className="border-b border-border px-6 py-4">
+          <h2 className="text-base font-medium text-foreground">
             A handoff, not a codebase dump
-          </CardTitle>
-          <CardDescription>
-            Drops are for curated context that the next agent can&apos;t re-derive
+          </h2>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            Drops are for curated context the next agent can&apos;t re-derive
             cheaply — not raw material it can read for itself.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-6 sm:grid-cols-2">
-          <div className="space-y-2">
+          </p>
+        </div>
+        <div className="grid divide-y sm:grid-cols-2 sm:divide-x sm:divide-y-0 divide-border">
+          <div className="space-y-3 p-6">
             <p className="flex items-center gap-2 text-sm font-medium text-foreground">
               <Check className="size-4 text-green-500" />
               Good to drop
             </p>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li className="flex gap-2">
-                <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
-                The task and what &quot;done&quot; means
-              </li>
-              <li className="flex gap-2">
-                <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
-                Decisions already made and their rationale
-              </li>
-              <li className="flex gap-2">
-                <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
-                Constraints, gotchas, and open questions
-              </li>
-              <li className="flex gap-2">
-                <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
-                Where to pick up and what to avoid
-              </li>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              {[
+                "The task and what “done” means",
+                "Decisions already made and their rationale",
+                "Constraints, gotchas, and open questions",
+                "Where to pick up and what to avoid",
+              ].map((item) => (
+                <li key={item} className="flex gap-2">
+                  <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
+                  {item}
+                </li>
+              ))}
             </ul>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3 p-6">
             <p className="flex items-center gap-2 text-sm font-medium text-foreground">
               <X className="size-4 text-red-500" />
               Not a Drop
             </p>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
-              <li className="flex gap-2">
-                <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
-                Whole-file or whole-repo source dumps
-              </li>
-              <li className="flex gap-2">
-                <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
-                Raw transcripts pasted verbatim
-              </li>
-              <li className="flex gap-2">
-                <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
-                Anything the receiver can read from the repo itself
-              </li>
-              <li className="flex gap-2">
-                <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
-                Content over the 4.5 MB platform ceiling
-              </li>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              {[
+                "Whole-file or whole-repo source dumps",
+                "Raw transcripts pasted verbatim",
+                "Anything the receiver can read from the repo itself",
+                "Content over the 4.5 MB platform ceiling",
+              ].map((item) => (
+                <li key={item} className="flex gap-2">
+                  <ArrowRight className="mt-0.5 size-3.5 shrink-0" />
+                  {item}
+                </li>
+              ))}
             </ul>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FlowBox({
+  label,
+  code,
+  highlighted = false,
+}: {
+  label: string;
+  code: string;
+  highlighted?: boolean;
+}) {
+  return (
+    <div
+      className={`shrink-0 border p-4 ${
+        highlighted
+          ? "border-foreground/30 bg-card ring-1 ring-foreground/10"
+          : "border-border bg-muted"
+      }`}
+    >
+      <div className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        {label}
+      </div>
+      <div className="font-mono text-sm text-foreground">{code}</div>
+    </div>
+  );
+}
+
+function FlowConnector() {
+  return (
+    <div className="flex min-w-12 flex-1 items-center">
+      <div className="h-px w-full bg-border" />
     </div>
   );
 }
