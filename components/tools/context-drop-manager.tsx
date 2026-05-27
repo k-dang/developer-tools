@@ -62,8 +62,11 @@ export function ContextDropManager({
           Manage Drops
         </CardTitle>
         <CardDescription>
-          Local-only. This list and the delete action are unavailable on the
-          deployed site — production cleanup requires running the app locally.
+          Visible to authorized users only. Share{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">
+            /tools/context-drop/grant?token=&lt;secret&gt;
+          </code>{" "}
+          to grant access.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

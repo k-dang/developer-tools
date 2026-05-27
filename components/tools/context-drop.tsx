@@ -74,13 +74,11 @@ export function ContextDrop() {
               <p className="mb-2 text-xs text-muted-foreground">
                 MCP server configuration
               </p>
-              <div className="relative">
-                <pre className="overflow-x-auto border border-border bg-muted p-3 pr-12 font-mono text-xs text-foreground">
+              <div className="flex items-start gap-2">
+                <pre className="flex-1 overflow-x-auto border border-border bg-muted p-3 font-mono text-xs text-foreground">
                   {mcpJson}
                 </pre>
-                <div className="absolute right-2 top-2">
-                  <CopyButton textToCopy={mcpJson} />
-                </div>
+                <CopyButton textToCopy={mcpJson} />
               </div>
             </div>
 
@@ -88,13 +86,11 @@ export function ContextDrop() {
               <p className="mb-2 text-xs text-muted-foreground">
                 Claude Code CLI
               </p>
-              <div className="relative">
-                <pre className="overflow-x-auto border border-border bg-muted p-3 pr-12 font-mono text-xs text-foreground">
+              <div className="flex items-center gap-2">
+                <pre className="flex-1 overflow-x-auto border border-border bg-muted p-3 font-mono text-xs text-foreground">
                   {cliCommand}
                 </pre>
-                <div className="absolute right-2 top-2">
-                  <CopyButton textToCopy={cliCommand} />
-                </div>
+                <CopyButton textToCopy={cliCommand} />
               </div>
             </div>
           </div>
