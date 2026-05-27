@@ -93,107 +93,90 @@ export function RegexTester() {
         </Card>
       </div>
       <div className="space-y-4">
-        <Card className="p-4 bg-card border-border h-full">
-          <p className="text-sm font-medium text-foreground mb-4">Regex Hints</p>
-          <div className="space-y-4 text-sm overflow-y-auto max-h-[600px] pr-2">
+        <Card className="p-4 bg-card border-border">
+          <p className="text-sm font-semibold text-foreground mb-4 tracking-wide uppercase text-xs">Regex Hints</p>
+          <div className="space-y-5 text-sm">
             <div>
-              <p className="font-medium mb-2 text-foreground">Character Classes</p>
-              <div className="grid gap-2 font-mono text-xs">
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">.</code>
-                  <span className="text-muted-foreground">Any character except newline</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">\w</code>
-                  <span className="text-muted-foreground">Word character (a-z, A-Z, 0-9, _)</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">\d</code>
-                  <span className="text-muted-foreground">Digit (0-9)</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">\s</code>
-                  <span className="text-muted-foreground">Whitespace character</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">\W</code>
-                  <span className="text-muted-foreground">Non-word character</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">\D</code>
-                  <span className="text-muted-foreground">Non-digit</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">\S</code>
-                  <span className="text-muted-foreground">Non-whitespace</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">[abc]</code>
-                  <span className="text-muted-foreground">Any of a, b, or c</span>
-                </div>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-3.5 rounded-full bg-blue-500/70" />
+                <p className="font-medium text-foreground text-xs tracking-wide">Character Classes</p>
+              </div>
+              <div className="grid gap-1.5 font-mono text-xs">
+                {[
+                  [".", "Any char except newline"],
+                  ["\\w", "Word char (a-z, 0-9, _)"],
+                  ["\\d", "Digit (0–9)"],
+                  ["\\s", "Whitespace"],
+                  ["\\W", "Non-word char"],
+                  ["\\D", "Non-digit"],
+                  ["\\S", "Non-whitespace"],
+                  ["[abc]", "Any of a, b, or c"],
+                ].map(([token, desc]) => (
+                  <div key={token} className="flex gap-2 items-baseline">
+                    <code className="shrink-0 bg-muted px-1.5 py-0.5 rounded text-foreground min-w-[2.75rem] text-center">{token}</code>
+                    <span className="text-muted-foreground leading-tight">{desc}</span>
+                  </div>
+                ))}
               </div>
             </div>
-            <div>
-              <p className="font-medium mb-2 text-foreground">Quantifiers</p>
-              <div className="grid gap-2 font-mono text-xs">
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">*</code>
-                  <span className="text-muted-foreground">Zero or more</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">+</code>
-                  <span className="text-muted-foreground">One or more</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">?</code>
-                  <span className="text-muted-foreground">Zero or one</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">{`{n}`}</code>
-                  <span className="text-muted-foreground">Exactly n times</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">{`{n,m}`}</code>
-                  <span className="text-muted-foreground">Between n and m times</span>
-                </div>
+
+            <div className="border-t border-border/50 pt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-3.5 rounded-full bg-emerald-500/70" />
+                <p className="font-medium text-foreground text-xs tracking-wide">Quantifiers</p>
+              </div>
+              <div className="grid gap-1.5 font-mono text-xs">
+                {[
+                  ["*", "Zero or more"],
+                  ["+", "One or more"],
+                  ["?", "Zero or one"],
+                  ["{n}", "Exactly n times"],
+                  ["{n,m}", "Between n and m"],
+                ].map(([token, desc]) => (
+                  <div key={token} className="flex gap-2 items-baseline">
+                    <code className="shrink-0 bg-muted px-1.5 py-0.5 rounded text-foreground min-w-[2.75rem] text-center">{token}</code>
+                    <span className="text-muted-foreground leading-tight">{desc}</span>
+                  </div>
+                ))}
               </div>
             </div>
-            <div>
-              <p className="font-medium mb-2 text-foreground">Anchors & Boundaries</p>
-              <div className="grid gap-2 font-mono text-xs">
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">^</code>
-                  <span className="text-muted-foreground">Start of string</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">$</code>
-                  <span className="text-muted-foreground">End of string</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">\b</code>
-                  <span className="text-muted-foreground">Word boundary</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">\B</code>
-                  <span className="text-muted-foreground">Non-word boundary</span>
-                </div>
+
+            <div className="border-t border-border/50 pt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-3.5 rounded-full bg-amber-500/70" />
+                <p className="font-medium text-foreground text-xs tracking-wide">Anchors & Boundaries</p>
+              </div>
+              <div className="grid gap-1.5 font-mono text-xs">
+                {[
+                  ["^", "Start of string"],
+                  ["$", "End of string"],
+                  ["\\b", "Word boundary"],
+                  ["\\B", "Non-word boundary"],
+                ].map(([token, desc]) => (
+                  <div key={token} className="flex gap-2 items-baseline">
+                    <code className="shrink-0 bg-muted px-1.5 py-0.5 rounded text-foreground min-w-[2.75rem] text-center">{token}</code>
+                    <span className="text-muted-foreground leading-tight">{desc}</span>
+                  </div>
+                ))}
               </div>
             </div>
-            <div>
-              <p className="font-medium mb-2 text-foreground">Groups & Alternation</p>
-              <div className="grid gap-2 font-mono text-xs">
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">(abc)</code>
-                  <span className="text-muted-foreground">Capture group</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">(?:abc)</code>
-                  <span className="text-muted-foreground">Non-capturing group</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <code className="bg-muted px-2 py-1 rounded text-foreground">a|b</code>
-                  <span className="text-muted-foreground">a or b</span>
-                </div>
+
+            <div className="border-t border-border/50 pt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1 h-3.5 rounded-full bg-violet-500/70" />
+                <p className="font-medium text-foreground text-xs tracking-wide">Groups & Alternation</p>
+              </div>
+              <div className="grid gap-1.5 font-mono text-xs">
+                {[
+                  ["(abc)", "Capture group"],
+                  ["(?:abc)", "Non-capturing group"],
+                  ["a|b", "a or b"],
+                ].map(([token, desc]) => (
+                  <div key={token} className="flex gap-2 items-baseline">
+                    <code className="shrink-0 bg-muted px-1.5 py-0.5 rounded text-foreground min-w-[2.75rem] text-center">{token}</code>
+                    <span className="text-muted-foreground leading-tight">{desc}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
