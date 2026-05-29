@@ -23,7 +23,7 @@ export function JsonFormatter() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-2 gap-4">
       <div className="space-y-2">
         <Label htmlFor="json-input" className="text-foreground">
           Input JSON
@@ -33,10 +33,10 @@ export function JsonFormatter() {
           placeholder="Paste your JSON here..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="min-h-[200px] font-mono text-sm bg-muted border-border text-foreground"
+          className="min-h-[400px] font-mono text-sm bg-muted border-border text-foreground"
         />
+        <Button onClick={formatJson}>Format JSON</Button>
       </div>
-      <Button onClick={formatJson}>Format JSON</Button>
       <div className="space-y-2">
         <Label className="text-foreground">Formatted Output</Label>
         <SyntaxHighlighter
@@ -47,7 +47,7 @@ export function JsonFormatter() {
             borderRadius: "0.5rem",
             fontSize: "0.85rem",
             lineHeight: "1.5",
-            minHeight: "200px",
+            minHeight: "400px",
             border: "1px solid hsl(var(--border))",
           }}
           showLineNumbers

@@ -41,9 +41,9 @@ export const tools: ToolConfig[] = [
     description: "Format and validate JSON",
   },
   {
-    id: "graphql-prettifier",
-    slug: "graphql-prettifier",
-    name: "GraphQL Prettifier",
+    id: "graphql-formatter",
+    slug: "graphql-formatter",
+    name: "GraphQL Formatter",
     icon: Network,
     description: "Format and prettify GraphQL queries",
   },

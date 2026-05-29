@@ -176,7 +176,7 @@ function prettifyGraphQL(input: string): string {
 
 const SAMPLE_QUERY = `query GetUser($id: ID!) { user(id: $id) { id name email posts(first: 5, orderBy: CREATED_AT_DESC) { edges { node { id title body createdAt tags { name } } } pageInfo { hasNextPage endCursor } } friends { id name } } }`;
 
-export function GraphqlPrettifier() {
+export function GraphqlFormatter() {
   const [input, setInput] = useState(SAMPLE_QUERY);
   const [output, setOutput] = useState(prettifyGraphQL(SAMPLE_QUERY));
 
@@ -194,7 +194,7 @@ export function GraphqlPrettifier() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-2 gap-4">
       <div className="space-y-2">
         <Label htmlFor="graphql-input" className="text-foreground">
           Input GraphQL
@@ -204,20 +204,9 @@ export function GraphqlPrettifier() {
           placeholder="Paste your GraphQL query or schema here..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="min-h-[200px] font-mono text-sm bg-muted border-border text-foreground"
+          className="min-h-[400px] font-mono text-sm bg-muted border-border text-foreground"
         />
-      </div>
-      <div className="flex gap-2">
         <Button onClick={formatGraphql}>Format GraphQL</Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setInput(SAMPLE_QUERY);
-            setOutput(prettifyGraphQL(SAMPLE_QUERY));
-          }}
-        >
-          Load Sample
-        </Button>
       </div>
       <div className="space-y-2">
         <Label className="text-foreground">Formatted Output</Label>
@@ -229,7 +218,7 @@ export function GraphqlPrettifier() {
             borderRadius: "0.5rem",
             fontSize: "0.85rem",
             lineHeight: "1.5",
-            minHeight: "200px",
+            minHeight: "400px",
             border: "1px solid hsl(var(--border))",
           }}
           showLineNumbers

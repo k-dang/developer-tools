@@ -24,7 +24,7 @@ const TOOL_GROUPS = [
   {
     id: "format",
     label: "Format",
-    slugs: ["json-formatter", "graphql-prettifier", "regex", "markdown-viewer"],
+    slugs: ["json-formatter", "graphql-formatter", "regex", "markdown-viewer"],
   },
   {
     id: "encode",
