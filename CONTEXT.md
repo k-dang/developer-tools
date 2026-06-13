@@ -20,6 +20,14 @@ The composed image is exported from a preset-sized canvas. V1 supports aspect ra
 
 A curated gradient background option for the export canvas. V1 uses preset backgrounds only and does not expose custom gradient color stops.
 
+### Line Length
+
+In the Character Counter tool, a line's **length** (the user's original term was "column length") is its JavaScript string `.length` — UTF-16 code units. A tab counts as 1 and an emoji may count as 2. This is deliberately the on-disk character count, **not** the visual on-screen column width (tabs are not expanded to tab stops, wide glyphs are not double-counted). It matches the character counts shown elsewhere in the same tool.
+
+### Character Counter
+
+A tool that reports totals for pasted text (characters, characters without spaces, words, lines) and renders a per-line preview. The preview annotates each line with its [[Line Length]]. V1 displays lengths only — there is no configurable maximum and no over-limit highlighting.
+
 ### Context Drop
 
 A single markdown artifact one AI coding agent submits so another agent (or a human) can pick up the same task with full context. Each Context Drop is reachable at a unique **Drop Link** and is served as raw markdown — it is the canonical, ingestible form, not a rendered page. Short form: "Drop".

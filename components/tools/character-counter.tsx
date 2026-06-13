@@ -4,6 +4,14 @@ import { useState, useMemo } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+const sampleText = `The quick brown fox jumps over the lazy dog.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Short line.
+This line is intentionally a good deal longer so the per-line length gutter has a number worth looking at.
+
+Blank line above. Emoji and unicode: 😀 café — naïve résumé.`;
 
 const lineColors = [
   "bg-red-500/20",
@@ -23,6 +31,11 @@ export function CharacterCounter() {
     return input.split("\n");
   }, [input]);
 
+  const gutterWidth = useMemo(() => {
+    const longest = lines.reduce((max, line) => Math.max(max, line.length), 0);
+    return String(longest).length;
+  }, [lines]);
+
   const stats = useMemo(() => {
     const characters = input.length;
     const charactersNoSpaces = input.replace(/\s/g, "").length;
@@ -40,9 +53,19 @@ export function CharacterCounter() {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="character-counter-input" className="text-foreground">
-          Input
-        </Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="character-counter-input" className="text-foreground">
+            Input
+          </Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setInput(sampleText)}
+          >
+            Load sample
+          </Button>
+        </div>
         <Textarea
           id="character-counter-input"
           placeholder="Enter text to count characters..."
@@ -86,9 +109,20 @@ export function CharacterCounter() {
             {lines.map((line, index) => (
               <div
                 key={index}
-                className={`${lineColors[index % lineColors.length]} break-all whitespace-pre-wrap px-1`}
+                className={`${lineColors[index % lineColors.length]} flex gap-2 px-1`}
               >
-                {line ? line.replace(/ /g, "·") : "\u00A0"}
+                <span
+                  className="shrink-0 select-none text-right text-muted-foreground tabular-nums"
+                  style={{ width: `${gutterWidth}ch` }}
+                >
+                  {line.length}
+                </span>
+                <span aria-hidden className="select-none text-muted-foreground">
+                  │
+                </span>
+                <span className="min-w-0 break-all whitespace-pre-wrap">
+                  {line ? line.replace(/ /g, "·") : "\u00A0"}
+                </span>
               </div>
             ))}
           </div>
