@@ -183,6 +183,40 @@ export const tools: ToolConfig[] = [
   },
 ];
 
+export type ToolGroup = {
+  id: string;
+  label: string;
+  slugs: string[];
+};
+
+export const toolGroups: ToolGroup[] = [
+  {
+    id: "format",
+    label: "Format",
+    slugs: ["json-formatter", "graphql-formatter", "regex", "markdown-viewer"],
+  },
+  {
+    id: "encode",
+    label: "Encode",
+    slugs: ["base64", "url-encoder", "jwt-decoder"],
+  },
+  {
+    id: "generate",
+    label: "Generate",
+    slugs: ["hash", "guid-generator", "lorem-ipsum"],
+  },
+  {
+    id: "visual",
+    label: "Visual",
+    slugs: ["color-picker", "image-converter", "screenshot-composer", "favicon-generator"],
+  },
+  {
+    id: "utilities",
+    label: "Utilities",
+    slugs: ["timestamp", "character-counter", "cron", "text-differ", "csv-viewer", "context-drop"],
+  },
+];
+
 export function getToolBySlug(slug: string): ToolConfig | undefined {
   return tools.find((tool) => tool.slug === slug);
 }

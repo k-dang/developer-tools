@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { tools } from "@/lib/tools-config";
+import { tools, toolGroups } from "@/lib/tools-config";
 import { ChevronRight } from "lucide-react";
 import {
   Sidebar,
@@ -20,33 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
-const TOOL_GROUPS = [
-  {
-    id: "format",
-    label: "Format",
-    slugs: ["json-formatter", "graphql-formatter", "regex", "markdown-viewer"],
-  },
-  {
-    id: "encode",
-    label: "Encode",
-    slugs: ["base64", "url-encoder", "jwt-decoder"],
-  },
-  {
-    id: "generate",
-    label: "Generate",
-    slugs: ["hash", "guid-generator", "lorem-ipsum"],
-  },
-  {
-    id: "visual",
-    label: "Visual",
-    slugs: ["color-picker", "image-converter", "screenshot-composer", "favicon-generator"],
-  },
-  {
-    id: "utilities",
-    label: "Utilities",
-    slugs: ["timestamp", "character-counter", "cron", "text-differ", "csv-viewer", "context-drop"],
-  },
-] as const;
+const TOOL_GROUPS = toolGroups;
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();

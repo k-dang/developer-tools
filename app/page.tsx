@@ -1,13 +1,32 @@
 import Link from "next/link";
 import Image from "next/image";
-import { tools } from "@/lib/tools-config";
+import { tools, toolGroups, getToolBySlug } from "@/lib/tools-config";
 import { Card, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { KeyboardShortcut } from "@/components/keyboard-shortcut";
 
 export default function Page() {
-  const generalTools = tools.filter((tool) => !tool.category || tool.category === "tools");
   const sandboxes = tools.filter((tool) => tool.category === "sandboxes");
+
+  // Build the sections from the same group definitions the sidebar uses, so
+  // the landing page and navigation stay in sync.
+  const sections = toolGroups
+    .map((group) => ({
+      ...group,
+      groupTools: group.slugs
+        .map((slug) => getToolBySlug(slug))
+        .filter((tool): tool is NonNullable<typeof tool> => Boolean(tool)),
+    }))
+    .filter((section) => section.groupTools.length > 0);
+
+  if (sandboxes.length > 0) {
+    sections.push({
+      id: "sandboxes",
+      label: "Sandboxes",
+      slugs: sandboxes.map((tool) => tool.slug),
+      groupTools: sandboxes,
+    });
+  }
 
   const renderToolCard = (tool: (typeof tools)[number]) => {
     const Icon = tool.icon;
@@ -66,27 +85,29 @@ export default function Page() {
           <KeyboardShortcut />
         </div>
 
-        {/* Tool List */}
-        <div className="mb-12">
-          <h2 className="mb-6 font-mono text-xl font-semibold text-foreground">
-            <span className="text-muted-foreground">$</span> available_tools
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {generalTools.map(renderToolCard)}
-          </div>
+        {/* Grouped Tool Sections (mirrors the sidebar grouping) */}
+        <div className="flex flex-col gap-10">
+          {sections.map((section, index) => (
+            <section
+              key={section.id}
+              className="section-reveal"
+              style={{ animationDelay: `${index * 80}ms` }}
+            >
+              <div className="mb-5 flex items-center gap-3">
+                <h2 className="font-mono text-sm font-semibold uppercase tracking-wider text-foreground">
+                  <span className="text-[#4ade80]">$</span> {section.label}
+                </h2>
+                <span className="font-mono text-[11px] tabular-nums text-muted-foreground/40">
+                  [{section.groupTools.length.toString().padStart(2, "0")}]
+                </span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {section.groupTools.map(renderToolCard)}
+              </div>
+            </section>
+          ))}
         </div>
-
-        {/* Sandboxes Section */}
-        {sandboxes.length > 0 && (
-          <div>
-            <h2 className="mb-6 font-mono text-xl font-semibold text-foreground">
-              <span className="text-muted-foreground">$</span> sandboxes
-            </h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {sandboxes.map(renderToolCard)}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
