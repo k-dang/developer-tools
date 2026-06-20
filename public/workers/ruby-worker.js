@@ -1,34 +1,10 @@
 /// <reference lib="webworker" />
 
 import { DefaultRubyVM } from "https://cdn.jsdelivr.net/npm/@ruby/wasm-wasi@2.7.2/dist/browser/+esm";
+import { formatArgsAsText, postOutput } from "./sandbox-output.js";
 
 let vm;
 let __consoleInterceptionInstalled = false;
-
-/**
- * Converts console arguments to a single text string.
- * Handles strings, objects (via JSON.stringify), and fallback to String().
- */
-function formatArgsAsText(args) {
-  return args
-    .map((a) => {
-      if (typeof a === "string") return a;
-      try {
-        return JSON.stringify(a);
-      } catch {
-        return String(a);
-      }
-    })
-    .join(" ");
-}
-
-/**
- * Normalizes text (removes trailing newlines, converts CRLF to LF) and posts to main thread.
- */
-function postOutput(type, text) {
-  const normalized = text.replaceAll("\r\n", "\n").replace(/\n$/, "");
-  self.postMessage({ type, data: normalized });
-}
 
 /**
  * Sets up console interception for Ruby VM output capture.
