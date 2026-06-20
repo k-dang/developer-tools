@@ -48,9 +48,9 @@ export function RubySandbox() {
   }, [isReady, run]);
 
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4 md:grid-cols-2">
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
+        <div className="flex h-8 items-center justify-between">
           <Label htmlFor="ruby-code" className="text-foreground">
             Ruby Code
           </Label>
@@ -67,7 +67,7 @@ export function RubySandbox() {
         </div>
         <MonacoEditor
           className="border"
-          height="400px"
+          height="500px"
           defaultLanguage="ruby"
           value={code}
           onChange={(value) => setCode(value || "")}
@@ -87,7 +87,9 @@ export function RubySandbox() {
 
       {isEditorMounted && (
         <div className="space-y-2">
-          <Label className={error ? "text-destructive" : "text-foreground"}>Output</Label>
+          <div className="flex h-8 items-center">
+            <Label className={error ? "text-destructive" : "text-foreground"}>Output</Label>
+          </div>
           <Textarea
             value={
               error
@@ -97,7 +99,7 @@ export function RubySandbox() {
                   : ""
             }
             readOnly
-            className={`font-mono text-sm h-[200px] resize-none whitespace-pre ${
+            className={`font-mono text-sm h-[500px] resize-none whitespace-pre ${
               error ? "bg-destructive/10 border-destructive text-destructive" : "bg-muted"
             }`}
             rows={10}
