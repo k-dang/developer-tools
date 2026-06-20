@@ -22,6 +22,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { RubyIcon } from "@/components/ui/ruby-icon";
+import { JavaScriptIcon } from "@/components/ui/javascript-icon";
 
 export type ToolConfig = {
   id: string;
@@ -179,6 +180,14 @@ export const tools: ToolConfig[] = [
     name: "Ruby Sandbox",
     icon: RubyIcon,
     description: "Ruby code editor with syntax highlighting",
+    category: "sandboxes",
+  },
+  {
+    id: "javascript-sandbox",
+    slug: "javascript-sandbox",
+    name: "JavaScript Sandbox",
+    icon: JavaScriptIcon,
+    description: "JavaScript code editor with syntax highlighting",
     category: "sandboxes",
   },
 ];
